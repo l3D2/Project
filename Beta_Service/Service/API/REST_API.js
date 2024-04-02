@@ -21,6 +21,10 @@ const verifyAPIKey = (req, res, next) => {
   }
 };
 
+app.post("/api/", verifyAPIKey, (req, res) => {
+  res.status(200).send("OK");
+});
+
 // Create DB
 app.post("/api/db_newuser/", verifyAPIKey, async (req, res) => {
   //users.push(req.body)
@@ -30,16 +34,23 @@ app.post("/api/db_newuser/", verifyAPIKey, async (req, res) => {
   res.status(200).send(`Response => ${response}`)
 })
 
-
-app.post("/api/", verifyAPIKey, (req, res) => {
-  res.status(200).send("OK");
-});
-
 app.post("/db", (req, res) => {
   const data = req.body;
   console.log(data);
   res.status(200).send("OK");
 });
+
+app.get("/api/db_getuser", verifyAPIKey, async (req, res) => {
+  res.status(200).send("OK");
+})
+
+app.put("/api/db_updateuser", verifyAPIKey, async (req, res) => {
+  res.status(200).send("OK");
+})
+
+app.delete("/api/db_deleteuser", verifyAPIKey, async (req, res) => {
+  res.status(200).send("OK");
+})
 
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
