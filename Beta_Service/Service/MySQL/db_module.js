@@ -1,10 +1,12 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'iot_database'
+  connectionLimit: 10,
+  host: '210.246.215.31',
+  user: 'BD2',
+  password: 'BD22342197',
+  database: 'IoT_DB',
+  port:"3306"
 });
 
 
@@ -20,8 +22,10 @@ connection.connect((err) => {
 const db_query = (sql) => {
     connection.query(sql , (err, result) => {
         if (err) {
+            console.log(err)
             return err
         }
+        console.log(result)
         return result
     })
 }
