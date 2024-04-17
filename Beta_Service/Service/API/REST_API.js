@@ -2,7 +2,7 @@ const hyperExpress = require("hyper-express")
 const logger = require("morgan");
 const cors = require("cors");
 const app = new hyperExpress.Server();
-const { db_query } = require('../MySQL/db_module')
+const { db_query } = require('../Database/db_module')
 
 logger.token("client-ip", (req) => {
   return req.ip; // Fetches the client's IP address
