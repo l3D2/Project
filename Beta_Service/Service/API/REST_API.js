@@ -2,14 +2,23 @@ const hyperExpress = require("hyper-express")
 const logger = require("morgan");
 const cors = require("cors");
 const app = new hyperExpress.Server();
-//const { db_query } = require('../MySQL/db_module')
+const { db_query } = require('../MySQL/db_module')
 
 logger.token("client-ip", (req) => {
   return req.ip; // Fetches the client's IP address
 });
 
-// Use Morgan for request logging with IP address
-app.use(logger(":client-ip - :method :url :status :response-time ms"));
+app.use(logger(':client-ip | :method :url :status'));
+
+const responseTime = (req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const elapsed = Date.now() - start;
+    console.log(`${req.method} ${req.url} - ${elapsed} ms`);
+  });
+  next();
+};
+app.use(responseTime);
 //app.use(cors());
 
 const verifyAPIKey = (req, res, next) => {
@@ -28,8 +37,8 @@ app.get('/api/', verifyAPIKey, (req, res) => {
 
 // Create DB
 app.post("/api/db_newuser/", verifyAPIKey, async (req, res) => {
-  let json = req.body
-  let query = "INSERT INTO Account (Account_ID, Name, Email, Permission, Token, Signup_ts) VALUES ('" + json.id + "', '" + json.username + "', 'testapi@gmail.com', 'A', 'test', '2021-01-01 00:00:00')"
+  let json = await req.json()
+  let query = "INSERT INTO Account (Account_ID, Name, Email, Permission, Token, Signup_ts) VALUES (UUID(), '" + json.username + "', 'testapi@gmail.com', 'A', 'test', '2021-01-01 00:00:00')"
   let response = await db_query(query)
   res.status(200).send(`Response => ${response}`)
 })
