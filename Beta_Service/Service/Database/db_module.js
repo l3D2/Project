@@ -41,5 +41,21 @@ const insertUser = async (name,email,tk) => {
   }
 }
 
+const getUser = async () => {
+  const sql = `SELECT * FROM Account`
+  try {
+    const result = await db_query(sql);
+    return result;
+  } catch (error) {
+    return `Error Getting User ${error}`
+  }
+
+}
+
+const updateUser = async () => {
+  const now = new Date();
+  const datetime = now.toISOString()
+  const sql = ``
+}
 
 module.exports = { db_query };
