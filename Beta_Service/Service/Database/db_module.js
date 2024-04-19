@@ -41,8 +41,8 @@ const insertUser = async (name,email,tk) => {
   }
 }
 
-const getUser = async () => {
-  const sql = `SELECT * FROM Account`
+const getUser = async (gID) => {
+  const sql = `SELECT * FROM Account WHERE Google_Id = '${gID}'`
   try {
     const result = await db_query(sql);
     return result;
@@ -52,10 +52,16 @@ const getUser = async () => {
 
 }
 
-const updateUser = async () => {
+const updateUser = async (gID, name, lineTk) => {
   const now = new Date();
   const datetime = now.toISOString()
-  const sql = ``
+  const sql = `UPDATE Account SET Name = '${name}', Token = '${lineTk}', Signup_ts = '${datetime}' WHERE Google_Id = '${gID}'`
+  try {
+    const result = await db_query(sql)
+    return 'Updated User Successfully.'
+  } catch (error) {
+    return `Error Updating User ${error}`
+  }
 }
 
 module.exports = { db_query };
