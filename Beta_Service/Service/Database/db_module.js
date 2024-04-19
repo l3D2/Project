@@ -64,4 +64,8 @@ const updateUser = async (gID, name, lineTk) => {
   }
 }
 
-module.exports = { db_query };
+module.exports = {
+  insertUser,
+  getUser,
+  updateUser
+};
