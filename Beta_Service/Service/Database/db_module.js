@@ -22,10 +22,10 @@ connection.connect((err) => {
 const db_query = async (sql) => {
   try {
     const result = await connection.query(sql);
-    return result; // Return the actual query result
+    return result;
   } catch (err) {
     console.error("Error Query =>", err);
-    throw err; // Re-throw the error for proper handling
+    throw err;
   }
 }
 // Account TB
@@ -61,6 +61,18 @@ const updateUser = async (gID, name, lineTk) => {
     return 'Updated User Successfully.'
   } catch (error) {
     return `Error Updating User ${error}`
+  }
+}
+
+// Category TB
+
+const insertCat = async (accId, catName) => {
+  const sql = `INSERT INTO Category (Account_ID, Cat_Name) VALUES ('${accId}', '${catName}')`
+  try {
+    await db_query(sql);
+    return "Inserted Category Successfully."
+  } catch (error) {
+    return `Error Inserting Category ${error}`
   }
 }
 
