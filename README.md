@@ -3,5 +3,8 @@
 - API
     - [x] Database Module
     - [x] user(POST,GET,PUT,DELETE)
-- Service
-    - [ ] Line
+- Line
+    - [ ] notification
+    - [ ] chat bot
+    - [ ] rich menu
+    - [ ] etc
