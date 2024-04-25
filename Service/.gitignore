@@ -1,6 +1,5 @@
 node_modules
-dist
-dist-ssr
+logs
 *.local
 
 # Editor directories and files

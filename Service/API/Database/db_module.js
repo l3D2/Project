@@ -75,10 +75,10 @@ const getUser = (gID) => {
     })
 }
 
-const updateUser = async (gID, name, lineTk) => {
+const updateUser = async (gID, name, passwd, lineTk) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `UPDATE Account SET Name = '${name}', Token = '${lineTk}', Update_ts = '${datetime}' WHERE Google_Id = '${gID}'`
+  const sql = `UPDATE Account SET Name = '${name}', Password = '${passwd}', Token = '${lineTk}', Update_ts = '${datetime}' WHERE Google_Id = '${gID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
