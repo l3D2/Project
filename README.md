@@ -8,3 +8,6 @@
     - [ ] chat bot
     - [ ] rich menu
     - [ ] etc
+- User
+    - [x] Login with Google Account
+    - [x] Insert account to Database
