@@ -42,14 +42,12 @@ const verifyAPIKey = (req, res, next) => {
 
 app.get('/api/status', verifyAPIKey, async (req, res) => {
   console.log('API Service is running');
-  //const db = await database.connectDatabase()
   res.status(200).send('API Service is running');
 });
 
 //User
 app.post("/api/user", verifyAPIKey, async (req, res) => {
   let json = await req.json()
-  //let query = "INSERT INTO Account (Account_ID, Name, Email, Permission, Token, Signup_ts) VALUES (UUID(), '" + json.username + "', 'testapi@gmail.com', 'A', 'test', '2021-01-01 00:00:00')"
   try {
     let response = await database.insertUser(json.name, json.email, json.googleId)
     res.status(200).send(`Database => ${response}`)
@@ -72,11 +70,17 @@ app.get("/api/user", verifyAPIKey, async (req, res) => {
 })
 
 app.put("/api/user", verifyAPIKey, async (req, res) => {
-  res.status(200).send("OK");
+  let json = await req.json()
+  try {
+    let response = await database.updateUser(json.googleId, json.name, json.password, json.lineToken)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
 })
 
 app.delete("/api/user", verifyAPIKey, async (req, res) => {
-  res.status(200).send("OK");
+  res.status(405).send("Method Not Allowed");
 })
 
 app.listen(3030, () => {
