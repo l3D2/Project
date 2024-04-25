@@ -1,5 +1,6 @@
 node_modules
 logs
+logs/**
 *.local
 
 # Editor directories and files

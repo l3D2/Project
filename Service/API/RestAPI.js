@@ -6,22 +6,10 @@ const path = require("path");
 const app = new hyperExpress.Server();
 const router = new hyperExpress.Router();
 const database = require('./Database/db_module')
-const mysql = require('mysql');
-
-const connection = mysql.createConnection({
-  connectionLimit: 10,
-  host: '210.246.215.31',
-  user: 'BD2',
-  password: 'BD22342197',
-  database: 'IoT_DB',
-  port:"3306"
-});
 
 logger.token("client-ip", (req) => {
   return req.ip; // Fetches the client's IP address
 });
-
-app.use(logger(':client-ip | :method :url :status'));
 
 const responseTime = (req, res, next) => {
   const start = Date.now();
@@ -49,6 +37,7 @@ app.use((req, res, next) => {
   res.on('finish', writeLog);
   next();
 });
+app.use(logger(':client-ip | :method :url :status'));
 //app.use(cors());
 
 const verifyAPIKey = (req, res, next) => {
