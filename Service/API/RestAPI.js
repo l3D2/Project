@@ -7,24 +7,11 @@ const app = new hyperExpress.Server();
 const router = new hyperExpress.Router();
 const database = require('./Database/db_module')
 
-logger.token("client-ip", (req) => {
-  return req.ip; // Fetches the client's IP address
-});
-
-const responseTime = (req, res, next) => {
-  const start = Date.now();
-  res.on('finish', () => {
-    const elapsed = Date.now() - start;
-    console.log(`${req.method} ${req.url} - ${elapsed} ms`);
-  });
-  next();
-};
-
-app.use(responseTime)
 app.use((req, res, next) => {
-  const writeLog = () => {
+  const start = Date.now();
+  const writeLog = (restime) => {
     const timestamp = new Date().toISOString();
-    const logForm = '[' + timestamp + '] '+ `IP >> ${req.ip} | ` + req.method + ' - ' + req.url + ' - ' + res.statusCode + '\n';
+    const logForm = '[' + timestamp + '] '+ `IP >> ${req.ip} | ` + req.method + ' - ' + req.url + ' ' + res.statusCode + ' - ' + restime + ' ms\n';
     const fileName = `${timestamp.slice(0,10)}.log`;
     const logPath = path.join('logs', fileName);
 
@@ -34,10 +21,14 @@ app.use((req, res, next) => {
       }
     })
   };
-  res.on('finish', writeLog);
+  res.on('finish', () => {
+    const elapsed = Date.now() - start;
+    console.log(`${req.ip} | ${req.method} ${req.url} ${res.statusCode} - ${elapsed} ms`);
+    writeLog(elapsed);
+  });
   next();
 });
-app.use(logger(':client-ip | :method :url :status'));
+app.use(logger("combined"));
 //app.use(cors());
 
 const verifyAPIKey = (req, res, next) => {
