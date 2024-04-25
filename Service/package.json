@@ -2,11 +2,11 @@
   "name": "pre-project",
   "version": "1.0.0",
   "description": "",
-  "main": "./test/App.js",
+  "main": "API/RestAPI.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./Service/API/REST_API.js",
-    "devbun": "nodemon ./Service/API/REST_API.js"
+    "dev": "nodemon API/RestAPI.js",
+    "devbun": "nodemon API/RestAPI.js"
   },
   "repository": {
     "type": "git",
