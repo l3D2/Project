@@ -83,6 +83,50 @@ app.delete("/api/user", verifyAPIKey, async (req, res) => {
   res.status(405).send("Method Not Allowed");
 })
 
+//Category TB
+app.post("/api/category", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.insertCategory(json.accID, json.name)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.get("/api/category", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try{
+    let response = await database.getCategory(json.accID)
+    if(response.length > 0)
+      res.status(200).json(response)
+    else
+      res.status(400).send("Category not found")
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.put("/api/category", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.updateCategory(json.catID, json.name)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.delete("/api/category", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.deleteCategory(json.catID)
+    res.status(200).send(`Database => ${response}`)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
 app.listen(3030, () => {
   console.log('API Service listening on port 3030')
   database.connectDatabase()
