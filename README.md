@@ -3,6 +3,9 @@
 - API
     - [x] Database Module
     - [x] user(POST,GET,PUT,DELETE)
+    - [x] category(POST,GET,PUT,DELETE)
+    - [x] device(POST,GET,PUT,DELETE)
+    - [x] data(POST,GET)
 - Line
     - [ ] notification
     - [ ] chat bot

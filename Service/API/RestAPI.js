@@ -86,7 +86,6 @@ app.delete("/api/user", verifyAPIKey, async (req, res) => {
 //Category TB
 app.post("/api/category", verifyAPIKey, async (req, res) => {
   let json = await req.json()
-  console.log(json)
   try {
     let response = await database.insertCat(json.Account_ID, json.Cat_Name)
     res.status(200).send(`Database => ${response}`)
@@ -111,7 +110,7 @@ app.get("/api/category", verifyAPIKey, async (req, res) => {
 app.put("/api/category", verifyAPIKey, async (req, res) => {
   let json = await req.json()
   try {
-    let response = await database.updateCat(json.catID, json.name)
+    let response = await database.updateCat(json.Cat_ID, json.Cat_Name)
     res.status(200).send(`Database => ${response}`)
   }catch(err){
     res.status(500).send(err)
@@ -121,9 +120,88 @@ app.put("/api/category", verifyAPIKey, async (req, res) => {
 app.delete("/api/category", verifyAPIKey, async (req, res) => {
   let json = await req.json()
   try {
-    let response = await database.deleteCat(json.catID)
+    let response = await database.deleteCat(json.Cat_ID)
     res.status(200).send(`Database => ${response}`)
   } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
+app.post("/api/device", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.createDevice(json.device_name, json.apikey, json.accID)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.get("/api/device-id", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try{
+    let response = await database.getDevice(json.Device_ID)
+    if(response.length > 0)
+      res.status(200).json(response)
+    else
+      res.status(400).send("Device not found")
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.get("/api/device-ownedId", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try{
+    let response = await database.getDevice(null,json.Owned_ID)
+    if(response.length > 0)
+      res.status(200).json(response)
+    else
+      res.status(400).send("Device not found")
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.put("/api/device", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.updateDevice(json.Owned_ID,json.Device_ID, json.Device_Name, json.Cat_ID, json.MAC_Address, json.Location, json.API_status, json.Register_ts)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.delete("/api/device", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.deleteDevice(json.Device_ID)
+    res.status(200).send(`Database => ${response}`)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
+app.post("/api/data", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.insertData(json.Device_ID, json.Data_Value)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.get("/api/data", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try{
+    let response = await database.getData(json.Device_ID)
+    if(response.length > 0)
+      res.status(200).json(response)
+    else
+      res.status(400).send("Data not found")
+  }catch(err){
     res.status(500).send(err)
   }
 })

@@ -132,7 +132,7 @@ const deleteCat = async (catID) => {
       if (err) {
         return reject('Error Deleted Category.\n',err);
       }
-      return resolve(`Deleted Category '${catID}' Successfully.`);
+      return resolve(`Deleted Category ID '${catID}' Successfully.`);
     })
   })
 }
@@ -141,97 +141,119 @@ const deleteCat = async (catID) => {
 const createDevice = async (deviceName,apiKey,accId) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `INSERT INTO Device (Device_ID, Device_Name, API_key, Create_ts, Create_by) VALUES (UUID(), '${deviceName}', '${apiKey}', '${datetime}', '${accId})`
-  try {
-    await db_query(sql);
-    return "Inserted Device Successfully."
-  } catch (error) {
-    return `Error Inserting Device ${error}`
-  }
+  console.log(deviceName, apiKey, accId)
+  const sql = `INSERT INTO Device (Device_ID, Device_Name, API_key, Create_ts, Create_by) VALUES (UUID(), '${deviceName}', '${apiKey}', '${datetime}', '${accId}')`
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Inserted Device.\n',err);
+      }
+      return resolve(`Inserted Device '${deviceName}' Successfully.`);
+    })
+  })
 }
 
-const getDevice = async (deviceID) => {
-  const sql = `SELECT * FROM Device WHERE Device_ID = '${deviceID}'`
-  try {
-    const result = await db_query(sql);
-    return result;
-  } catch (error) {
-    return `Error Getting Device ${error}`
-  }
+const getDevice = async (deviceID,accID=null) => {
+  const sql = `SELECT * FROM Device WHERE ` + (accID != null ? `Owned_ID = '${accID}'` : `Device_ID = '${deviceID}'`)
+  console.log(sql)
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Selected Device.\n',err);
+      }
+      return resolve(result);
+    })
+  })
 }
 
-const updateDevice = async (deviceID, deviceName, catID, macaddr, located, apiStatus, RegTs) => {
-  const sql = `UPDATE Device SET Device_Name = '${deviceName}', Cat_ID = ${catID}, MAC_Address = '${macaddr}', Location = ${located}, api_status = '${apiStatus}', Register_ts = '${RegTs}' WHERE Device_ID = '${deviceID}'`
-  try {
-    const result = await db_query(sql)
-    return 'Updated Device Successfully.'
-  } catch (error) {
-    return `Error Updating Device ${error}`
-  }
+const updateDevice = async (ownedId, deviceID, deviceName, catID, macaddr, located, apiStatus, RegTs) => {
+  const now = new Date();
+  const datetime = formatDate(now)
+  const sql = `UPDATE Device SET Owned_ID = '${ownedId}', Device_Name = '${deviceName}', Cat_ID = ${catID}, MAC_Address = '${macaddr}', Location = ${located}, api_status = '${apiStatus}'` + (RegTs != null ? `, Register_ts = '${RegTs}'` : '') + `WHERE Device_ID = '${deviceID}'`
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Updated Device.\n',err);
+      }
+      return resolve(`Updated Device '${deviceName}' Successfully.`);
+    })
+  })
 }
 
 const deleteDevice = async (deviceID) => {
   const sql = `DELETE FROM Device WHERE Device_ID = '${deviceID}'`
-  try {
-    const result = await db_query(sql)
-    return 'Deleted Device Successfully.'
-  } catch (error) {
-    return `Error Deleting Device ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Deleted Device.\n',err);
+      }
+      return resolve(`Deleted Device ID '${deviceID}' Successfully.`);
+    })
+  })
 }
 
 // Device_Data TB
 const insertData = async (deviceID, data) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `INSERT INTO Device_Data (Device_ID, Timestamp, EC, Temp_Water, PH, Temp, Humidity) VALUES ('${deviceID}', ${datetime}, ${data[0]}, ${data[1]}, ${data[2]}, ${data[3]}, ${data[4]})`
-  try {
-    await db_query(sql);
-    return "Inserted Data Successfully."
-  } catch (error) {
-    return `Error Inserting Data ${error}`
-  }
+  const sql = `INSERT INTO Device_Data (Device_ID, Timestamp, EC, Temp_Water, PH, Temp, Humidity) VALUES ('${deviceID}', '${datetime}', '${data[0]}', '${data[1]}', '${data[2]}', '${data[3]}', '${data[4]}')`
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Inserted Data.\n', err);
+      }
+      return resolve(`Inserted Data Successfully.`);
+    })
+  })
 }
 
 const getData = async (deviceID) => {
   const sql = `SELECT * FROM Device_Data WHERE Device_ID = '${deviceID}'`
-  try {
-    const result = await db_query(sql);
-    return result;
-  } catch (error) {
-    return `Error Getting Data ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Selected Data.\n', err);
+      }
+      return resolve(result);
+    })
+  })
 }
 
 //Notification TB
 const insertNoti = async (accID, deviceID) => {
   const sql = `INSERT INTO Notification (Acc_ID, Device_ID) VALUES ('${accID}', '${deviceID}')`
-  try {
-    await db_query(sql);
-    return "Inserted Notification Successfully."
-  } catch (error) {
-    return `Error Inserting Notification ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Inserted Notification.\n', err);
+      }
+      return resolve(`Inserted Notification Successfully.`);
+    })
+  })
 }
 
 const getNoti = async (deviceID) => {
   const sql = `SELECT * FROM Notification WHERE Device_ID = '${deviceID}'`
-  try {
-    const result = await db_query(sql);
-    return result;
-  } catch (error) {
-    return `Error Getting Notification ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Selected Notification.\n', err);
+      }
+      return resolve(result);
+    })
+  })
 }
 
 const updateNoti = async (deviceID, datamin, datamax) => {
   const sql = `UPDATE Notification SET EC_min = ${datamin[0]}, EC_max = ${datamax[0]}, PH_min = ${datamin[1]}, PH_max = ${datamax[1]}, Temp_min = ${datamin[2]}, Temp_max = ${datamax[2]}, Humi_min = ${datamin[3]}, Humi_max = ${datamax[3]} WHERE Device_ID = '${deviceID}'`
-  try {
-    const result = await db_query(sql)
-    return 'Updated Notification Successfully.'
-  } catch (error) {
-    return `Error Updating Notification ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Updated Notification.\n', err);
+      }
+      return resolve(`Updated Notification Successfully.`);
+    })
+  })
 }
 
 //Report TB
@@ -239,22 +261,26 @@ const insertRp = async (accID, topic, detail) => {
   const now = new Date();
   const datetime = formatDate(now)
   const sql = `INSERT INTO Report (accID, topic, detail, timestamp) VALUES ('${accID}', '${topic}', '${detail}', '${datetime}')`
-  try {
-    await db_query(sql);
-    return "Inserted Report Successfully."
-  } catch (error) {
-    return `Error Inserting Report ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Inserted Report.\n', err);
+      }
+      return resolve(`Inserted Report Successfully.`);
+    })
+  })
 }
 
 const updateRp = async (rpID, status) => {
   const sql = `UPDATE Report SET status = '${status}' WHERE id = '${rpID}'`
-  try {
-    const result = await db_query(sql)
-    return 'Updated Report Successfully.'
-  } catch (error) {
-    return `Error Updating Report ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Updated Report.\n', err);
+      }
+      return resolve(`Updated Report Successfully.`);
+    })
+  })
 }
 
 //Log TB
@@ -262,12 +288,14 @@ const insertLog = async (accId, action, detail) => {
   const now = new Date();
   const datetime = formatDate(now)
   const sql = `INSERT INTO Log (Account_ID, Action, Detail, Timestamp) VALUES ('${accId}', '${action}', '${detail}', '${datetime}')`
-  try {
-    await db_query(sql);
-    return "Inserted Log Successfully."
-  } catch (error) {
-    return `Error Inserting Log ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Inserted Log.\n', err);
+      }
+      return resolve(`Inserted Log Successfully.`);
+    })
+  })
 }
 
 module.exports = {
@@ -280,4 +308,15 @@ module.exports = {
   updateCat,
   deleteCat,
   createDevice,
+  getDevice,
+  updateDevice,
+  deleteDevice,
+  insertData,
+  getData,
+  insertNoti,
+  getNoti,
+  updateNoti,
+  insertRp,
+  updateRp,
+  insertLog
 };
