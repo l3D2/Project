@@ -6,10 +6,9 @@
     * hyperexpress
     * mysql
 
-    Run&debug with BUN version 1.1.3
+    Run&Debug with BUN version 1.1.3
 
     Success function
-    
     - [x] Database Module
     - [x] user(POST,GET,PUT,DELETE)
     - [x] category(POST,GET,PUT,DELETE)
