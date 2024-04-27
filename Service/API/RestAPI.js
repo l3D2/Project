@@ -72,7 +72,7 @@ app.get("/api/user", verifyAPIKey, async (req, res) => {
 app.put("/api/user", verifyAPIKey, async (req, res) => {
   let json = await req.json()
   try {
-    let response = await database.updateUser(json.googleId, json.name, json.password, json.lineToken)
+    let response = await database.updateUser(json.Google_Id, json.Name, json.Password, json.Line_token, json.Permission)
     res.status(200).send(`Database => ${response}`)
   }catch(err){
     res.status(500).send(err)
@@ -86,8 +86,9 @@ app.delete("/api/user", verifyAPIKey, async (req, res) => {
 //Category TB
 app.post("/api/category", verifyAPIKey, async (req, res) => {
   let json = await req.json()
+  console.log(json)
   try {
-    let response = await database.insertCategory(json.accID, json.name)
+    let response = await database.insertCat(json.Account_ID, json.Cat_Name)
     res.status(200).send(`Database => ${response}`)
   }catch(err){
     res.status(500).send(err)
@@ -97,7 +98,7 @@ app.post("/api/category", verifyAPIKey, async (req, res) => {
 app.get("/api/category", verifyAPIKey, async (req, res) => {
   let json = await req.json()
   try{
-    let response = await database.getCategory(json.accID)
+    let response = await database.getCat(json.Account_ID)
     if(response.length > 0)
       res.status(200).json(response)
     else
@@ -110,7 +111,7 @@ app.get("/api/category", verifyAPIKey, async (req, res) => {
 app.put("/api/category", verifyAPIKey, async (req, res) => {
   let json = await req.json()
   try {
-    let response = await database.updateCategory(json.catID, json.name)
+    let response = await database.updateCat(json.catID, json.name)
     res.status(200).send(`Database => ${response}`)
   }catch(err){
     res.status(500).send(err)
@@ -120,7 +121,7 @@ app.put("/api/category", verifyAPIKey, async (req, res) => {
 app.delete("/api/category", verifyAPIKey, async (req, res) => {
   let json = await req.json()
   try {
-    let response = await database.deleteCategory(json.catID)
+    let response = await database.deleteCat(json.catID)
     res.status(200).send(`Database => ${response}`)
   } catch (err) {
     res.status(500).send(err)

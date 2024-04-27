@@ -55,7 +55,7 @@ const insertUser = (name,email,gID) => {
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
-        return reject(err);
+        return reject('Error Inserted User.\n',err);
       }
       return resolve("Inserted User Successfully.");
     })
@@ -63,28 +63,27 @@ const insertUser = (name,email,gID) => {
 }
 
 const getUser = (gID) => {
-  console.log(gID)
   const sql = `SELECT * FROM Account WHERE Google_Id = '${gID}'`
     return new Promise((resolve, reject) => {
       connection.query(sql, (err, result) => {
         if (err) {
-          return reject(err);
+          return reject('Error Selected User.\n',err);
         }
         return resolve(result);
       })
     })
 }
 
-const updateUser = async (gID, name, passwd, lineTk) => {
+const updateUser = async (gID, name, passwd, lineTk, group) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `UPDATE Account SET Name = '${name}', Password = '${passwd}', Token = '${lineTk}', Update_ts = '${datetime}' WHERE Google_Id = '${gID}'`
+  const sql = `UPDATE Account SET Name = '${name}', Password = '${passwd}',Permission = '${group}', Line_token = '${lineTk}', Update_ts = '${datetime}' WHERE Google_Id = '${gID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
-        return reject(err);
+        return reject('Error Updated User.\n',err);
       }
-      return resolve("Updated User Successfully.");
+      return resolve(`Updated User GoogleID '${gID}' Successfully.`);
     })
   })
 }
@@ -92,42 +91,50 @@ const updateUser = async (gID, name, passwd, lineTk) => {
 // Category TB
 const insertCat = async (accId, catName) => {
   const sql = `INSERT INTO Category (Account_ID, Cat_Name) VALUES ('${accId}', '${catName}')`
-  try {
-    await db_query(sql);
-    return "Inserted Category Successfully."
-  } catch (error) {
-    return `Error Inserting Category ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Inserted Category.\n',err);
+      }
+      return resolve(`Inserted Category '${catName}' Successfully.`);
+    })
+  })
 }
 
-const getCat = async (catID) => {
-  const sql = `SELECT * FROM Category WHERE Cat_ID = '${catID}'`
-  try {
-    const result = await db_query(sql);
-    return result;
-  } catch (error) {
-    return `Error Getting Category ${error}`
-  }
+const getCat = async (accID) => {
+  const sql = `SELECT * FROM Category WHERE Account_ID = '${accID}'`
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Selected Category.\n',err);
+      }
+      return resolve(result);
+    })
+  })
 }
 
 const updateCat = async (catID, catName) => {
   const sql = `UPDATE Category SET Cat_Name = '${catName}' WHERE Cat_ID = '${catID}'`
-  try {
-    const result = await db_query(sql)
-    return 'Updated Category Successfully.'
-  } catch (error) {
-    return `Error Updating Category ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Updated Category.\n',err);
+      }
+      return resolve(`Updated Category '${catName}' Successfully.`);
+    })
+  })
 }
 
 const deleteCat = async (catID) => {
   const sql = `DELETE FROM Category WHERE Cat_ID = '${catID}'`
-  try {
-    const result = await db_query(sql)
-    return 'Deleted Category Successfully.'
-  } catch (error) {
-    return `Error Deleting Category ${error}`
-  }
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Deleted Category.\n',err);
+      }
+      return resolve(`Deleted Category '${catID}' Successfully.`);
+    })
+  })
 }
 
 //Device TB
@@ -267,5 +274,10 @@ module.exports = {
   connectDatabase,
   insertUser,
   getUser,
-  updateUser
+  updateUser,
+  insertCat,
+  getCat,
+  updateCat,
+  deleteCat,
+  createDevice,
 };
