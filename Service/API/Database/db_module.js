@@ -1,11 +1,19 @@
 const mysql = require('mysql');
+require('dotenv').config()
+
+const config = {
+  dbHost: process.env.DB_HOST,
+  dbUser: process.env.DB_USER,
+  dbPassword: process.env.DB_PASS,
+  dbTB: process.env.DB_NAME
+}
 
 const connection = mysql.createConnection({
   connectionLimit: 20,
-  host: '210.246.215.31',
-  user: 'BD2',
-  password: 'BD22342197',
-  database: 'IoT_DB',
+  host: config.dbHost,
+  user: config.dbUser,
+  password: config.dbPassword,
+  database: config.dbTB,
   port:"3306"
 });
 

@@ -2,6 +2,7 @@ node_modules
 logs
 logs/**
 *.local
+*.env
 
 # Editor directories and files
 .vscode/*
