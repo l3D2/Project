@@ -27,5 +27,5 @@
 Coming soon...
 
 Develop this project by
-[maiok01](https://github.com/l3D2/Project)
+<!-- [maiok01](https://github.com/l3D2/Project) -->
 [BD2](https://github.com/l3D2/Project)
