@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  connectionLimit: 10,
+  connectionLimit: 20,
   host: '210.246.215.31',
   user: 'BD2',
   password: 'BD22342197',
