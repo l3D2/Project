@@ -59,7 +59,7 @@ const db_query = async (sql) => {
 const insertUser = (name,email,gID) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `INSERT INTO Account (Account_ID, Name, Email, Google_Id, Signup_ts) VALUES (UUID(), '${name}', '${email}', '${gID}', '${datetime}')`
+  const sql = `INSERT INTO Account (account_id, name, email, google_id, signup_ts) VALUES (UUID(), '${name}', '${email}', '${gID}', '${datetime}')`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -71,7 +71,7 @@ const insertUser = (name,email,gID) => {
 }
 
 const getUser = (gID) => {
-  const sql = `SELECT * FROM Account WHERE Google_Id = '${gID}'`
+  const sql = `SELECT * FROM Account WHERE google_id = '${gID}'`
     return new Promise((resolve, reject) => {
       connection.query(sql, (err, result) => {
         if (err) {
@@ -85,7 +85,7 @@ const getUser = (gID) => {
 const updateUser = async (gID, name, passwd, lineTk, group) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `UPDATE Account SET Name = '${name}', Password = '${passwd}',Permission = '${group}', Line_token = '${lineTk}', Update_ts = '${datetime}' WHERE Google_Id = '${gID}'`
+  const sql = `UPDATE Account SET name = '${name}', password = '${passwd}',group = '${group}', line_tk = '${lineTk}', update_ts = '${datetime}' WHERE google_id = '${gID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -98,7 +98,7 @@ const updateUser = async (gID, name, passwd, lineTk, group) => {
 
 // Category TB
 const insertCat = async (accId, catName) => {
-  const sql = `INSERT INTO Category (Account_ID, Cat_Name) VALUES ('${accId}', '${catName}')`
+  const sql = `INSERT INTO Category (acc_id, cat_name) VALUES ('${accId}', '${catName}')`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -110,7 +110,7 @@ const insertCat = async (accId, catName) => {
 }
 
 const getCat = async (accID) => {
-  const sql = `SELECT * FROM Category WHERE Account_ID = '${accID}'`
+  const sql = `SELECT * FROM Category WHERE acc_id = '${accID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -122,7 +122,7 @@ const getCat = async (accID) => {
 }
 
 const updateCat = async (catID, catName) => {
-  const sql = `UPDATE Category SET Cat_Name = '${catName}' WHERE Cat_ID = '${catID}'`
+  const sql = `UPDATE Category SET cat_name = '${catName}' WHERE cat_id = '${catID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -134,7 +134,7 @@ const updateCat = async (catID, catName) => {
 }
 
 const deleteCat = async (catID) => {
-  const sql = `DELETE FROM Category WHERE Cat_ID = '${catID}'`
+  const sql = `DELETE FROM Category WHERE cat_id = '${catID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -150,10 +150,11 @@ const createDevice = async (deviceName,apiKey,accId) => {
   const now = new Date();
   const datetime = formatDate(now)
   console.log(deviceName, apiKey, accId)
-  const sql = `INSERT INTO Device (Device_ID, Device_Name, API_key, Create_ts, Create_by) VALUES (UUID(), '${deviceName}', '${apiKey}', '${datetime}', '${accId}')`
+  const sql = `INSERT INTO Device (device_id, device_name, api_key, create_ts, create_by) VALUES (UUID(), '${deviceName}', '${apiKey}', '${datetime}', '${accId}')`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
+        console.log(err)
         return reject('Error Inserted Device.\n',err);
       }
       return resolve(`Inserted Device '${deviceName}' Successfully.`);
@@ -162,7 +163,7 @@ const createDevice = async (deviceName,apiKey,accId) => {
 }
 
 const getDevice = async (deviceID,accID=null) => {
-  const sql = `SELECT * FROM Device WHERE ` + (accID != null ? `Owned_ID = '${accID}'` : `Device_ID = '${deviceID}'`)
+  const sql = `SELECT * FROM Device WHERE ` + (accID != null ? `owned_id = '${accID}'` : `device_id = '${deviceID}'`)
   console.log(sql)
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
@@ -177,7 +178,7 @@ const getDevice = async (deviceID,accID=null) => {
 const updateDevice = async (ownedId, deviceID, deviceName, catID, macaddr, located, apiStatus, RegTs) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `UPDATE Device SET Owned_ID = '${ownedId}', Device_Name = '${deviceName}', Cat_ID = ${catID}, MAC_Address = '${macaddr}', Location = ${located}, api_status = '${apiStatus}'` + (RegTs != null ? `, Register_ts = '${RegTs}'` : '') + `WHERE Device_ID = '${deviceID}'`
+  const sql = `UPDATE Device SET owned_id = '${ownedId}', device_name = '${deviceName}', cat_id = ${catID}, mac_address = '${macaddr}', location = ${located}, api_status = '${apiStatus}'` + (RegTs != null ? `, register_ts = '${RegTs}'` : '') + `WHERE device_id = '${deviceID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -189,7 +190,7 @@ const updateDevice = async (ownedId, deviceID, deviceName, catID, macaddr, locat
 }
 
 const deleteDevice = async (deviceID) => {
-  const sql = `DELETE FROM Device WHERE Device_ID = '${deviceID}'`
+  const sql = `DELETE FROM Device WHERE device_id = '${deviceID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -204,7 +205,7 @@ const deleteDevice = async (deviceID) => {
 const insertData = async (deviceID, data) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `INSERT INTO Device_Data (Device_ID, Timestamp, EC, Temp_Water, PH, Temp, Humidity) VALUES ('${deviceID}', '${datetime}', '${data[0]}', '${data[1]}', '${data[2]}', '${data[3]}', '${data[4]}')`
+  const sql = `INSERT INTO Device_Data (device_id, datetime, EC, Temp_Water, PH, Temp, Humidity) VALUES ('${deviceID}', '${datetime}', '${data[0]}', '${data[1]}', '${data[2]}', '${data[3]}', '${data[4]}')`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -216,7 +217,7 @@ const insertData = async (deviceID, data) => {
 }
 
 const getData = async (deviceID) => {
-  const sql = `SELECT * FROM Device_Data WHERE Device_ID = '${deviceID}'`
+  const sql = `SELECT * FROM Device_Data WHERE device_id = '${deviceID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -229,7 +230,7 @@ const getData = async (deviceID) => {
 
 //Notification TB
 const insertNoti = async (accID, deviceID) => {
-  const sql = `INSERT INTO Notification (Acc_ID, Device_ID) VALUES ('${accID}', '${deviceID}')`
+  const sql = `INSERT INTO Notification (device_id) VALUES ('${accID}', '${deviceID}')`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -241,7 +242,7 @@ const insertNoti = async (accID, deviceID) => {
 }
 
 const getNoti = async (deviceID) => {
-  const sql = `SELECT * FROM Notification WHERE Device_ID = '${deviceID}'`
+  const sql = `SELECT * FROM Notification WHERE device_id = '${deviceID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -252,11 +253,12 @@ const getNoti = async (deviceID) => {
   })
 }
 
-const updateNoti = async (deviceID, datamin, datamax) => {
-  const sql = `UPDATE Notification SET EC_min = ${datamin[0]}, EC_max = ${datamax[0]}, PH_min = ${datamin[1]}, PH_max = ${datamax[1]}, Temp_min = ${datamin[2]}, Temp_max = ${datamax[2]}, Humi_min = ${datamin[3]}, Humi_max = ${datamax[3]} WHERE Device_ID = '${deviceID}'`
+const updateNoti = async (deviceID, dstatus, datamin, datamax) => {
+  const sql = `UPDATE Notification SET notify_ec = '${dstatus[0]}', notify_ph = '${dstatus[1]}', notify_temp = '${dstatus[2]}', notify_humi = '${dstatus[3]}', ec_min = '${datamin[0]}', ec_max = '${datamax[0]}', ph_min = '${datamin[1]}', ph_max = '${datamax[1]}', temp_min = '${datamin[2]}', temp_max = '${datamax[2]}', humi_min = '${datamin[3]}', humi_max = '${datamax[3]}' WHERE device_id = '${deviceID}'`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
+        console.log(err)
         return reject('Error Updated Notification.\n', err);
       }
       return resolve(`Updated Notification Successfully.`);
@@ -279,6 +281,19 @@ const insertRp = async (accID, topic, detail) => {
   })
 }
 
+const getRp = async (accID=null) => {
+  const sql = `SELECT * FROM Report`+ (accID != null ? ` WHERE accID = '${accID}'` : '')
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return reject('Error Selected Report.\n', err);
+      }
+      return resolve(result);
+    })
+  })
+
+}
+
 const updateRp = async (rpID, status) => {
   const sql = `UPDATE Report SET status = '${status}' WHERE id = '${rpID}'`
   return new Promise((resolve, reject) => {
@@ -295,7 +310,7 @@ const updateRp = async (rpID, status) => {
 const insertLog = async (accId, action, detail) => {
   const now = new Date();
   const datetime = formatDate(now)
-  const sql = `INSERT INTO Log (Account_ID, Action, Detail, Timestamp) VALUES ('${accId}', '${action}', '${detail}', '${datetime}')`
+  const sql = `INSERT INTO Log (acc_id, action, detail, datetime) VALUES ('${accId}', '${action}', '${detail}', '${datetime}')`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -325,6 +340,7 @@ module.exports = {
   getNoti,
   updateNoti,
   insertRp,
+  getRp,
   updateRp,
   insertLog
 };

@@ -206,6 +206,52 @@ app.get("/api/data", verifyAPIKey, async (req, res) => {
   }
 })
 
+app.get("/api/notify", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try{
+    let response = await database.getNoti(json.device_id)
+    if(response.length > 0)
+      res.status(200).json(response)
+    else
+      res.status(400).send("Notify not found")
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.put("/api/notify", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.updateNoti(json.device_id, json.status, json.dmin, json.dmax)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.post("/api/report", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try {
+    let response = await database.insertRp(json.accID, json.topic, json.detail)
+    res.status(200).send(`Database => ${response}`)
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
+app.get("/api/report-all", verifyAPIKey, async (req, res) => {
+  let json = await req.json()
+  try{
+    let response = await database.getRp((json == {} ? null : json.accID))
+    if(response.length > 0)
+      res.status(200).json(response)
+    else
+      res.status(400).send("Report not found")
+  }catch(err){
+    res.status(500).send(err)
+  }
+})
+
 app.listen(3030, () => {
   console.log('API Service listening on port 3030')
   database.connectDatabase()
