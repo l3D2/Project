@@ -26,6 +26,10 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+.warp {
+  min-height: 100vh;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
