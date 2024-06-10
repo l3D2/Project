@@ -1,8 +1,10 @@
 "use client";
+
 import { Inter } from "next/font/google";
 import "./globals.css";
+import React, { useState, useEffect } from "react";
 
-export const metadata = {
+const metadata = {
   title: "Water Application",
 };
 
