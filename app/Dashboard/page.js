@@ -86,7 +86,7 @@ export default function Dashboard() {
             {"Humidity"}
             <span className="inline-flex items-center">99 %</span>
           </CardReport>
-          <p className="text-center">Last Update xx:xx</p>
+          <p className="text-center">Last Update xx</p>
         </div>
       </Content>
     </>
