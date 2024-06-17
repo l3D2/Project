@@ -22,7 +22,7 @@ export default function Dashboard() {
       <Navbar />
       <Content>
         <div>
-          <div className="grid grid-cols-4 gap-x-2">
+          {/* <div className="grid grid-cols-4 gap-x-2">
             <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
               <CardStat>
                 <DevicesIcon />
@@ -48,22 +48,22 @@ export default function Dashboard() {
             <div className="col-span-2 row-span-2">
               <CardFilter />
             </div>
-          </div>
+          </div> */}
           <Divider className="my-1 bg-gray-600" style={{ height: "1.5px" }} />
           <GoogleMapView />
         </div>
         <div className="grid w-full gap-2">
-          <CardDevice />
+          {/* <CardDevice /> */}
           <CardReport>
             <ThermostatIcon />
             {"Temperature"}
             <div className="flex justify-between items-center">
               <span className="inline-flex items-center">
-                <WaterIcon />
+                <WaterIcon className="sm:max-xl:text-sm" />
                 10 °C
               </span>
               <span className="inline-flex items-center">
-                <AirIcon />
+                <AirIcon className="sm:max-xl:text-sm" />
                 10 °C
               </span>
             </div>
