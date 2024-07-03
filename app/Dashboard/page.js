@@ -1,3 +1,4 @@
+"use client";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Content from "@/components/content";
@@ -8,6 +9,8 @@ import CardFilter from "@/components/cardFilter";
 import Divider from "@mui/material/Divider";
 import CardReport from "@/components/cardReport";
 
+import { useSession } from "next-auth/react";
+
 //Icon
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import AirIcon from "@mui/icons-material/Air";
@@ -17,9 +20,11 @@ import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import DevicesIcon from "@mui/icons-material/Devices";
 
 export default function Dashboard() {
+  const { data: session } = useSession();
+  console.log(session);
   return (
     <>
-      <Navbar />
+      <Navbar session={session} />
       <Content>
         <div>
           {/* <div className="grid grid-cols-4 gap-x-2">

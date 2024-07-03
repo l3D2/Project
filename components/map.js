@@ -1,4 +1,3 @@
-"use client";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import React from "react";
 import Skeleton from "@mui/material/Skeleton";

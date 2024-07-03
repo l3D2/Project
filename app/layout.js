@@ -3,6 +3,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import React, { useState, useEffect } from "react";
+import AuthProvider from "./providers";
+
+const inter = Inter({ subsets: ["latin"] });
 
 const metadata = {
   title: "Water Application",
@@ -29,7 +32,9 @@ export default function RootLayout({ children }) {
   };
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={inter.className}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
