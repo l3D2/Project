@@ -16,7 +16,17 @@ api_user.post("/user/register", async (req, res) => {
   res.status(200).send("User Registered Successfully.");
 });
 api_user.post("/user/get-user", async (req, res) => {
-  res.status(200).send("Done");
+  let body = await req.json();
+  let result;
+  try {
+    result = database.query_sql(
+      `SELECT * FROM users WHERE email = '${body.email}'`
+    );
+  } catch (error) {
+    console.error("Error Fetching User.\n", error);
+  }
+  console.log(result);
+  res.status(200).send("Fetched User successfully.");
 });
 api_user.get("/user/get-all", async (req, res) => {});
 api_user.put("/user/update", async (req, res) => {});
