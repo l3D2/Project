@@ -10,8 +10,7 @@ export default function login() {
   const router = useRouter();
   const handleGoogle = async () => {
     try {
-      console.log("Redirecting to dashboard...");
-      await signIn("google", { callbackUrl: "/dashboard" });
+      await signIn("google", { callbackUrl: false }); //"/dashboard"
       //router.replace("dashboard");
     } catch (error) {
       console.log(error);

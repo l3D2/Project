@@ -6,7 +6,7 @@ const CheckUserRegistered = async (email) => {
   };
 
   try {
-    const response = await axios.post("http://localhost:3030/api/user", data);
+    const response = await axios.post("http://api.bd2-cloud.net/api", data);
     console.log("User is registered:", response.data);
   } catch (error) {
     if (error.response && error.response.status === 404) {

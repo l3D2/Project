@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
+import axios from "axios";
 
 export const authOptions = {
   providers: [
@@ -27,19 +28,8 @@ export const authOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account.provider === "google") {
-        //console.log("callback => ", profile);
+        console.log("callback => ", profile);
         try {
-          const res = await fetch("", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: profile.email,
-              name: profile.name,
-              picture: profile.picture,
-            }),
-          });
         } catch (err) {
           console.log(err);
         }
@@ -52,22 +42,3 @@ export const authOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-
-Register = () => {};
-
-CheckUserRegistered = async (email) => {
-  try {
-    const res = await fetch("", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-      }),
-    });
-    console.log(res.json());
-  } catch (err) {
-    console.log(err);
-  }
-};

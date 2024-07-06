@@ -18,9 +18,9 @@ export default function Home() {
           </div>
           <div className="relative h-full pt-16 ml-auto">
             <div className="lg:w-2/3 text-center mx-auto">
-              <h1 class="text-gray-900 dark:text-white font-bold text-4xl md:text-5xl xl:text-6xl">
+              <h1 className="text-gray-900 dark:text-white font-bold text-4xl md:text-5xl xl:text-6xl">
                 Water Quality Monitoring and Alert System for
-                <p class="type-title1 dark:text-green-300"></p>
+                <p className="type-title1 dark:text-green-300"></p>
               </h1>
               <p className="mt-7 text-3xl text-gray-700 dark:text-gray-300">
                 ระบบตรวจวัดและแจ้งเตือนคุณภาพน้ำ สำหรับพื้นที่เกษตรกรรม
