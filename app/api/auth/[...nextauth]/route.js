@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-import axios from "axios";
 
 export const authOptions = {
   providers: [
@@ -29,12 +28,32 @@ export const authOptions = {
     async signIn({ account, profile }) {
       if (account.provider === "google") {
         console.log("callback => ", profile);
-        try {
-        } catch (err) {
-          console.log(err);
+        const data = {
+          email: profile.email,
+        };
+        //CheckUserRegistration
+        const response = await fetch(
+          "http://api.bd2-cloud.net/api/user/get-user",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        console.log("response => ", response);
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log("User is registered:", responseData);
+          return true;
+        } else if (response.status === 404) {
+          return `/auth/register?email=${profile.email}&name=${profile.name}&imgurl=${profile.picture}`;
+        } else {
+          console.error("Error checking registration:");
         }
       }
-      return true; // Do different verification for other providers that don't have `email_verified`
+      return true;
     },
   },
 };

@@ -10,7 +10,7 @@ export default function login() {
   const router = useRouter();
   const handleGoogle = async () => {
     try {
-      await signIn("google", { callbackUrl: false }); //"/dashboard"
+      await signIn("google", { callbackUrl: "/dashboard" }); //"/dashboard"
       //router.replace("dashboard");
     } catch (error) {
       console.log(error);

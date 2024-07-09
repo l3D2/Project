@@ -1,20 +1,24 @@
-import axios from "axios";
-
-const CheckUserRegistered = async (email) => {
+const test = async () => {
   const data = {
-    email: email,
+    email: "userData.email",
+    name: "userData.name",
+    imgurl: "userData.imgurl",
+    password: "hashedpassword",
   };
-
-  try {
-    const response = await axios.post("http://api.bd2-cloud.net/api", data);
-    console.log("User is registered:", response.data);
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      console.log("User is not registered.");
-    } else {
-      console.error("Error checking registration:", error);
-    }
+  const response = await fetch("http://api.bd2-cloud.net/api/user/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  if (response.ok) {
+    alert("Registration Successful!");
+  } else if (response.status === 404) {
+    alert("User is not registered.");
+  } else {
+    console.error("Error checking registration:");
   }
 };
 
-CheckUserRegistered("testapi@gmail.com");
+test();
