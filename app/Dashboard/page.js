@@ -27,7 +27,7 @@ export default function Dashboard() {
       <Navbar session={session} />
       <Content>
         <div>
-          {/* <div className="grid grid-cols-4 gap-x-2">
+          <div className="grid grid-cols-4 gap-x-2">
             <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
               <CardStat>
                 <DevicesIcon />
@@ -53,12 +53,12 @@ export default function Dashboard() {
             <div className="col-span-2 row-span-2">
               <CardFilter />
             </div>
-          </div> */}
+          </div>
           <Divider className="my-1 bg-gray-600" style={{ height: "1.5px" }} />
           <GoogleMapView />
         </div>
         <div className="grid w-full gap-2">
-          {/* <CardDevice /> */}
+          <CardDevice />
           <CardReport>
             <ThermostatIcon />
             {"Temperature"}
