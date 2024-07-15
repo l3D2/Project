@@ -9,7 +9,7 @@ const port = process.env.API_PORT || 3000;
 
 app.use(logger("combined"));
 app.use(bodyParser.json());
-//app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 //Router Call
 app.use("/api", api_user);
 

@@ -28,10 +28,10 @@
     "express": "^4.19.2",
     "gapi-script": "^1.2.0",
     "http-errors": "^2.0.0",
-    "hyper-express": "^6.15.2",
+    "hyper-express": "^6.16.4",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
-    "nodemon": "^3.0.2",
+    "nodemon": "^3.1.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-login": "^5.2.2"
