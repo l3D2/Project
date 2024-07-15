@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 
@@ -7,9 +8,16 @@ const logger = require("morgan");
 const api_user = require("./Router/user");
 const port = process.env.API_PORT || 3000;
 
+app.use(
+  cors({
+    origin: "*", // Wildcard is NOT for Production
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 app.use(logger("combined"));
 app.use(bodyParser.json());
-//app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 //Router Call
 app.use("/api", api_user);
 

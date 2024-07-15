@@ -3,20 +3,25 @@ const router_user = express.Router();
 const database = require("../Database/db_module");
 
 router_user.post("/user/register", async (req, res) => {
-  let body = req.body;
+  const body = req.body;
+  console.log(body);
+  const datetime = database.formatDate(new Date());
+  let result;
   try {
-    database.query_sql(
-      `INSERT INTO Account (name, email, password, img_url) VALUES ('${body.name}', '${body.email}', '${body.password}', '${body.img_url})`
+    // Using parameterized queries to prevent SQL injection
+    result = await database.query_sql(
+      `INSERT INTO Account (account_id, name, email, password, imgurl, signup_ts) VALUES (UUID(), '${body.name}', '${body.email}', '${body.password}', '${body.imgurl}', '${datetime}')`
     );
+    console.log("User Registered Successfully.", result);
+    res.status(200).send("User Registered Successfully.");
   } catch (error) {
-    console.error("Error Registering User.\n", error);
+    console.error("Error Registering User.\n", error.message);
     res.status(500).send("Error Registering User.");
   }
-  console.log("User Registered Successfully.");
-  res.status(200).send("User Registered Successfully.");
 });
 router_user.post("/user/get-user", async (req, res) => {
-  let body = req.body;
+  const body = req.body;
+  console.log(body);
   let result;
   try {
     result = await database.query_sql(

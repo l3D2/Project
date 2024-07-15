@@ -60,7 +60,7 @@ const formatDate = (date) => {
 
 const query_sql = async (sql) => {
   try {
-    await connectDatabase(); // Ensure connection is established
+    await connectDatabase();
     const result = await new Promise((resolve, reject) => {
       connection.query(sql, (err, result) => {
         if (err) {
@@ -70,11 +70,11 @@ const query_sql = async (sql) => {
         }
       });
     });
-    await disconnectDatabase(); // Disconnect after query execution
+    await disconnectDatabase();
     return result;
   } catch (err) {
     console.error("Error executing query:", err);
-    throw err; // Re-throw the error for proper handling
+    throw err;
   }
 };
 
@@ -82,4 +82,5 @@ module.exports = {
   connectDatabase,
   disconnectDatabase,
   query_sql,
+  formatDate,
 };
