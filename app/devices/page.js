@@ -10,6 +10,7 @@ import Divider from "@mui/material/Divider";
 import CardReport from "@/components/cardReport";
 import GoogleMapView from "@/components/map";
 import { GoogleMapProvider } from "@/context/GoogleMapProvider";
+import DataTable from "@/components/dataTable";
 
 // MUI
 import Tabs from "@mui/material/Tabs";
@@ -45,7 +46,7 @@ export default function Devices() {
             <div className="grid grid-cols-4 gap-x-2">
               <CardStat>
                 <DevicesIcon />
-                {"Device Name"}
+                {"Name"}
                 {"Test01"}
               </CardStat>
               <CardStat>
@@ -81,7 +82,7 @@ export default function Devices() {
                 {value == 1 ? (
                   <GoogleMapView />
                 ) : value == 2 ? (
-                  <p>Data</p>
+                  <DataTable />
                 ) : (
                   <p>Graph</p>
                 )}

@@ -16,6 +16,7 @@
     "@mui/material": "^5.15.19",
     "@mui/material-nextjs": "^5.15.11",
     "@mui/x-charts": "^7.9.0",
+    "@mui/x-data-grid": "^7.11.0",
     "@react-google-maps/api": "^2.19.3",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
