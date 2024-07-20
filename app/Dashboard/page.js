@@ -8,7 +8,7 @@ import CardStat from "@/components/cardStatus";
 import CardFilter from "@/components/cardFilter";
 import Divider from "@mui/material/Divider";
 import CardReport from "@/components/cardReport";
-
+import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import { useSession } from "next-auth/react";
 
 //Icon
@@ -55,7 +55,9 @@ export default function Dashboard() {
             </div>
           </div>
           <Divider className="my-1 bg-gray-600" style={{ height: "1.5px" }} />
-          <GoogleMapView />
+          <GoogleMapProvider>
+            <GoogleMapView />
+          </GoogleMapProvider>
         </div>
         <div className="grid w-full gap-2">
           <CardDevice />

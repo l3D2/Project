@@ -6,14 +6,14 @@ export default function Header({ children }) {
   return (
     <div className="flex justify-between items-center px-3 py-2 mb-1 rounded bg-gray-800">
       <div>{children}</div>
-      <Box
+      {/* <Box
         sx={{
           width: 500,
           maxWidth: "100%",
         }}
       >
         <TextField fullWidth size="small" label="Search" id="fullWidth" />
-      </Box>
+      </Box> */}
       <div>
         <button className="relative border rounded-xl p-2">
           <NotificationsNoneIcon />
