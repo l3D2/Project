@@ -20,14 +20,14 @@ import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import DevicesIcon from "@mui/icons-material/Devices";
 
 export default function Dashboard() {
-  const { data: session } = useSession();
-  console.log(session);
-  return (
-    <>
-      <Navbar session={session} />
-      <Content>
-        <div>
-          {/* <div className="grid grid-cols-4 gap-x-2">
+    const { data: session } = useSession();
+    console.log(session);
+    return (
+        <>
+            <Navbar session={session} />
+            <Content>
+                <div>
+                    {/* <div className="grid grid-cols-4 gap-x-2">
             <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
               <CardStat>
                 <DevicesIcon />
@@ -54,46 +54,51 @@ export default function Dashboard() {
               <CardFilter />
             </div>
           </div> */}
-          <Divider className="my-1 bg-gray-600" style={{ height: "1.5px" }} />
-          <GoogleMapView />
-        </div>
-        <div className="grid w-full gap-2">
-          {/* <CardDevice /> */}
-          <CardReport>
-            <ThermostatIcon />
-            {"Temperature"}
-            <div className="flex justify-between items-center">
-              <span className="inline-flex items-center">
-                <WaterIcon className="sm:max-xl:text-sm" />
-                10 °C
-              </span>
-              <span className="inline-flex items-center">
-                <AirIcon className="sm:max-xl:text-sm" />
-                10 °C
-              </span>
-            </div>
-          </CardReport>
-          <CardReport>
-            <BoltIcon />
-            {"Electrical Conductivity"}
-            <span className="inline-flex items-center">99 µS/cm</span>
-          </CardReport>
-          <CardReport>
-            <WaterDropIcon />
-            {"Potential of Hydrogen"}
-            <div className="flex items-center">
-              <div className=" h-5 w-20 rounded bg-green-300"></div>
-              <span className="ml-2">10</span>
-            </div>
-          </CardReport>
-          <CardReport>
-            <AirIcon />
-            {"Humidity"}
-            <span className="inline-flex items-center">99 %</span>
-          </CardReport>
-          <p className="text-center">Last Update xx:xx</p>
-        </div>
-      </Content>
-    </>
-  );
+                    <Divider
+                        className="my-1 bg-gray-600"
+                        style={{ height: "1.5px" }}
+                    />
+                    <GoogleMapView />
+                </div>
+                <div className="grid w-full gap-2">
+                    {/* <CardDevice /> */}
+                    <CardReport>
+                        <ThermostatIcon />
+                        {"Temperature"}
+                        <div className="flex justify-between items-center">
+                            <span className="inline-flex items-center">
+                                <WaterIcon className="sm:max-xl:text-sm" />
+                                10 °C
+                            </span>
+                            <span className="inline-flex items-center">
+                                <AirIcon className="sm:max-xl:text-sm" />
+                                10 °C
+                            </span>
+                        </div>
+                    </CardReport>
+                    <CardReport>
+                        <BoltIcon />
+                        {"Electrical Conductivity"}
+                        <span className="inline-flex items-center">
+                            99 µS/cm
+                        </span>
+                    </CardReport>
+                    <CardReport>
+                        <WaterDropIcon />
+                        {"Potential of Hydrogen"}
+                        <div className="flex items-center">
+                            <div className=" h-5 w-20 rounded bg-green-300"></div>
+                            <span className="ml-2">10</span>
+                        </div>
+                    </CardReport>
+                    <CardReport>
+                        <AirIcon />
+                        {"Humidity"}
+                        <span className="inline-flex items-center">99 %</span>
+                    </CardReport>
+                    <p className="text-center">Last Update xx:xx</p>
+                </div>
+            </Content>
+        </>
+    );
 }
