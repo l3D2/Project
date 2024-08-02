@@ -28,76 +28,73 @@ import { useState } from "react";
 
 // let testData = [2, 5.5, 2, 8.5, 1.5, 5, 20, 10];
 export default function AdminDashboard() {
-    const { data: session } = useSession();
-    console.log(session);
+  const { data: session } = useSession();
+  console.log(session);
 
-    const getDataSet = () => {
-        return DataSet;
-    };
+  const getDataSet = () => {
+    return DataSet;
+  };
 
-    return (
-        <>
-            <Navbar session={session} />
-            <Content>
-                <div>
-                    <div>
-                        <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
-                            <CardStat>
-                                <DevicesIcon />
-                                {"Stock Device"}
-                                {"100"}
-                            </CardStat>
-                            <CardStat>
-                                <CloudIcon />
-                                {"Cloud"}
-                                {"100"}
-                            </CardStat>
-                            <CardStat>
-                                <ApiIcon />
-                                {"API"}
-                                {"100"}
-                            </CardStat>
-                            <CardStat>
-                                <DevicesIcon />
-                                {"LINE"}
-                                {"100"}
-                            </CardStat>
-                        </div>
+  return (
+    <>
+      <Navbar session={session} />
+      <Content>
+        <div>
+          <div>
+            <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
+              <CardStat>
+                <DevicesIcon />
+                {"Stock Device"}
+                {"100"}
+              </CardStat>
+              <CardStat>
+                <CloudIcon />
+                {"Cloud"}
+                {"100"}
+              </CardStat>
+              <CardStat>
+                <ApiIcon />
+                {"API"}
+                {"100"}
+              </CardStat>
+              <CardStat>
+                <DevicesIcon />
+                {"LINE"}
+                {"100"}
+              </CardStat>
+            </div>
 
-                        <div className="width-fit">
-                            {/* filter */}
-                            <FilterChart
-                                className="width-fit"
-                                dataSet={getDataSet}
-                            />
-                            <TimeFilter />
+            <div className="width-fit">
+              {/* filter */}
+              <FilterChart className="width-fit" dataSet={getDataSet} />
+              <TimeFilter />
 
-                            <LineChart
-                                className="w-full"
-                                xAxis={[{ data: [1, 2, 3, 5, 8, 10, 11, 12] }]}
-                                series={[
-                                    {
-                                        data: [1, 4, 3, 5, 6, 8, 9, 10],
-                                    },
-                                ]}
-                                height={300}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="grid w-full gap-2">
-                    {/* <CardDevice /> */}
-                    <CardAdmin>
-                        <AdminPanelSettingsIcon />
-                        {"Administrator"}
-                    </CardAdmin>
-                    <ListAdmin />
-                    <p className="text-center pb-2">Last Update xx:xx</p>
-                </div>
-                <div>
-                    <buttonTest />
-                </div>
-            </Content>
-        </>
-    );
+              <LineChart
+                className="w-full"
+                xAxis={[{ data: [1, 2, 3, 5, 8, 10, 11, 12] }]}
+                series={[
+                  {
+                    data: [1, 4, 3, 5, 6, 8, 9, 10],
+                  },
+                ]}
+                height={300}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="grid w-full gap-2">
+          {/* <CardDevice /> */}
+          <CardAdmin>
+            <AdminPanelSettingsIcon />
+            {"Administrator"}
+          </CardAdmin>
+          <ListAdmin />
+          <p className="text-center pb-2">Last Update xx:xx</p>
+        </div>
+        <div>
+          <buttonTest />
+        </div>
+      </Content>
+    </>
+  );
 }
