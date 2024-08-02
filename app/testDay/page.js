@@ -30,23 +30,53 @@ const y2 = [90, 85, 70, 25, 23, 40, 45, 40, 50];
 
 const valueFormatter = (date) =>
     date.getHours() === 0
-        ? date.toLocaleDateString("fr-FR", {
+        ? date.toLocaleDateString("en-gh", {
               day: "2-digit",
-              month: "2-digit",
+              month: "short",
               year: "2-digit",
+              hour12: false,
+              //   hour: "2-digit",
+              //   minute: "2-digit",
           })
-        : date.toLocaleTimeString("fr-FR", {
+        : date.toLocaleTimeString("en-gh", {
+              hour: "2-digit",
+          });
+
+const valueFormatterTime = (date) =>
+    date.getHours() === 0
+        ? date.toLocaleDateString("en-gh", {
+              //   day: "2-digit",
+              //   month: "short",
+              //   year: "2-digit",
+              hour12: false,
+              hour: "2-digit",
+              minute: "2-digit",
+          })
+        : date.toLocaleTimeString("en-gh", {
               hour: "2-digit",
           });
 
 const config = {
-    series: [{ data: y1 }],
+    series: [{ data: y1 }, { data: y2 }], // เพิ่ม series ที่ 2 สำหรับแกน Y
     height: 300,
 };
 const xAxisCommon = {
     data: timeData,
     scaleType: "time",
-    valueFormatter,
+    valueFormatter: (date) =>
+        date.toLocaleDateString("en-gh", {
+            day: "2-digit",
+            month: "short",
+            year: "2-digit",
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+        }),
+};
+const yAxisCommon = {
+    data: timeData,
+    scaleType: "time",
+    valueFormatterTime,
 };
 export default function TickNumber() {
     return (
@@ -57,10 +87,17 @@ export default function TickNumber() {
                         ...xAxisCommon,
                         tickMinStep: 3600 * 1000 * 24, // min step: 24h
                     },
+                    // {
+                    //     ...xAxisCommon,
+                    //     id: "half days",
+                    //     tickMinStep: 3600 * 1000 * 12, // min step: 12hu
+                    // },
+                ]}
+                yAxis={[
                     {
-                        ...xAxisCommon,
-                        id: "half days",
-                        tickMinStep: 3600 * 1000 * 12, // min step: 12hu
+                        min: 0, // กำหนดค่าต่ำสุดของแกน Y
+                        max: 100, // กำหนดค่าสูงสุดของแกน Y
+                        label: "ค่าข้อมูล", // ป้ายชื่อแกน Y
                     },
                 ]}
                 {...config}

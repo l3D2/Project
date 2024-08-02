@@ -23,29 +23,64 @@ const MenuProps = {
     },
 };
 
-const data = [
+const dataSets = [
     {
         value: "Stock Device",
-        content: "Displays data from locally stored devices.",
-        data: [1, 2, 3, 4, 5, 5],
+        dataSets: [
+            {
+                date: "2012-04-23T18:25:43.511",
+                pH: 14,
+                EC: 2,
+                temp: 40,
+                humidity: 60,
+                ppt: 15,
+                battery: 80,
+            },
+        ],
     },
     {
         value: "Cloud",
-        content: "Shows data fetched from the cloud storage.",
-        data: [2, 4, 5, 5, 6, 5.5],
+        dataSets: [
+            {
+                date: "2012-04-23T18:25:43.511",
+                pH: 14,
+                EC: 2,
+                temp: 40,
+                humidity: 60,
+                ppt: 15,
+                battery: 80,
+            },
+        ],
     },
     {
         value: "API",
-        content: "Visualizes data retrieved from external APIs.",
-        data: [2, 4, 1, 2, 3, 2.5],
+        dataSets: [
+            {
+                date: "2012-04-23T18:25:43.511",
+                pH: 14,
+                EC: 2,
+                temp: 40,
+                humidity: 60,
+                ppt: 15,
+                battery: 80,
+            },
+        ],
     },
     {
         value: "LINE",
-        content: "Presents data specifically related to the LINE platform.",
-        data: [1, 3, 2, 4, 3, 4.5],
+        dataSets: [
+            {
+                date: "2012-04-23T18:25:43.511",
+                pH: 14,
+                EC: 2,
+                temp: 40,
+                humidity: 60,
+                ppt: 15,
+                battery: 80,
+            },
+        ],
     },
 ];
-
 function FilterChart() {
     const [filterChart, setFilterChart] = useState([]);
 
