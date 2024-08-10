@@ -66,12 +66,11 @@ export default function AdminDashboard() {
 
                         <div className="width-fit">
                             {/* filter */}
+                            <TimeFilter />z
                             <FilterChart
                                 className="width-fit"
                                 dataSet={getDataSet}
                             />
-                            <TimeFilter />
-
                             <LineChart
                                 className="w-full"
                                 xAxis={[{ data: [1, 2, 3, 5, 8, 10, 11, 12] }]}

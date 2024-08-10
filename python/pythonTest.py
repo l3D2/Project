@@ -41,7 +41,7 @@ start_date = datetime(2023, 1, 1)  # ปรับช่วงวันที่�
 end_date = datetime(2023, 12, 31)
 
 # สร้างข้อมูลสุ่ม 10 รายการ (ปรับจำนวนตามต้องการ)
-for _ in range(365):
+for _ in range(10):
     random_time, EC, Temp_Water, PH, Temp, Humidity = generate_random_data(
         start_date, end_date
     )

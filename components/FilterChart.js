@@ -119,10 +119,18 @@ function FilterChart() {
     // label data
     const labelData = {
         label: "Stock Device",
-        data: data?.map((items) => ({
-            device_id: items.device_id,
-            datetime: items.datetime,
-        })),
+        data: (data)=>{
+            const test = {};
+            const i = 0;
+            for(){
+
+            }
+        },
+        //data?.map((item)=>{}),
+        // data: data?.map((items) => ({
+        //     device_id: items.device_id,
+        //     datetime: items.datetime,
+        // })),
     };
     console.log(labelData);
     const handleChange = (event) => {
