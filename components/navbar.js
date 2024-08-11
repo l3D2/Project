@@ -33,9 +33,9 @@ export default function Navbar({ session }) {
             <div>
               <img
                 src={session?.user?.image}
-                alt="userImage"
-                width={50}
-                height={50}
+                alt=""
+                width={80}
+                height={80}
                 style={{ borderRadius: "5%" }}
               />
             </div>
@@ -44,7 +44,11 @@ export default function Navbar({ session }) {
                 Hello 👋{" "}
                 <span className="inline-flex items-center px-1 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
                   <VerifiedIcon className="mr-1" style={{ fontSize: "12px" }} />
-                  Dev
+                  {session?.user?.role == "U"
+                    ? "User"
+                    : session?.user?.role == "A"
+                    ? "Admin"
+                    : "Dev"}
                 </span>
                 <p className="text-sm">{session?.user?.name}</p>
                 <p className="text-[13px] text-gray-300">
