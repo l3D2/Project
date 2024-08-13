@@ -1,91 +1,133 @@
 "use client";
-
 import { useSession } from "next-auth/react";
-import axios from "axios";
+import { useState } from "react";
 
-//components
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Content from "@/components/content";
+import CardStat from "@/components/cardStatus";
+import Divider from "@mui/material/Divider";
+import CardReport from "@/components/cardReport";
+import GoogleMapView from "@/components/map";
+import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import DataTable from "@/components/dataTable";
-import {
-  GridRowModes,
-  DataGrid,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridRowEditStopReasons,
-} from "@mui/x-data-grid";
+
+// MUI
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+
+// Icons
+import ThermostatIcon from "@mui/icons-material/Thermostat";
+import AirIcon from "@mui/icons-material/Air";
+import WaterIcon from "@mui/icons-material/Water";
+import BoltIcon from "@mui/icons-material/Bolt";
+import WaterDropIcon from "@mui/icons-material/WaterDrop";
+import DevicesIcon from "@mui/icons-material/Devices";
+import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
+import TerrainIcon from "@mui/icons-material/Terrain";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
 export default function Device() {
-  const { data: session } = useSession();
+  const [value, setValue] = useState(1);
 
-  const fetchData = async () => {
-    const res = await fetch("", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 80 },
-    {
-      field: "datetime",
-      headerName: "Register Time",
-      type: "dateTime",
-      valueGetter: (value) => value && new Date(value),
-      width: 250,
-      editable: false,
-    },
-    {
-      field: "name",
-      headerName: "Device Name",
-      width: 90,
-      type: "number",
-      editable: false,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      type: "action",
-      width: 150,
-      cellClassName: "actions",
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
-      },
-    },
-  ];
+  const { data: session } = useSession();
 
-  const rows = [
-    { id: 1, DateTime: "11/11/11", firstName: "Jon", age: 14 },
-    { id: 2, DateTime: "12/11/11", firstName: "Cersei", age: 31 },
-  ];
   return (
     <>
       <Navbar session={session} />
       <Content>
-        {"Device Test"}
+        {"Device"}
         <div>
-          tasdw
-          <DataTable columns={columns} rows={rows} />
+          <div className="grid grid-cols-4 gap-x-2">
+            <CardStat>
+              <DevicesIcon />
+              {"Name"}
+              {"Test01"}
+            </CardStat>
+            <CardStat>
+              <TerrainIcon />
+              {"Lands"}
+              {"none"}
+            </CardStat>
+            <CardStat>
+              <DevicesIcon />
+              {"Status"}
+              {"Online"}
+            </CardStat>
+            <CardStat>
+              <BatteryChargingFullIcon />
+              {"Battery"}
+              {"100 %"}
+            </CardStat>
+          </div>
+          <Divider className="my-1 bg-gray-600" style={{ height: "1.5px" }} />
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                className="bg-white text-black rounded mb-1"
+              >
+                <Tab value={1} label="Map" />
+                <Tab value={2} label="Data" />
+                <Tab value={3} label="Graph" />
+              </Tabs>
+            </Box>
+            <GoogleMapProvider>
+              {value == 1 ? (
+                <GoogleMapView />
+              ) : value == 2 ? (
+                <DataTable />
+              ) : (
+                <p>Graph</p>
+              )}
+            </GoogleMapProvider>
+          </Box>
+        </div>
+        <div className="grid w-full gap-2">
+          <CardReport>
+            <ThermostatIcon />
+            {"Temperature"}
+            <div className="flex justify-between items-center">
+              <span className="inline-flex items-center">
+                <WaterIcon className="sm:max-xl:text-sm" />
+                10 °C
+              </span>
+              <span className="inline-flex items-center">
+                <AirIcon className="sm:max-xl:text-sm" />
+                10 °C
+              </span>
+            </div>
+          </CardReport>
+          <CardReport>
+            <BoltIcon />
+            {"Electrical Conductivity"}
+            <span className="inline-flex items-center">99 µS/cm</span>
+          </CardReport>
+          <CardReport>
+            <WaterDropIcon />
+            {"Potential of Hydrogen"}
+            <div className="flex items-center">
+              <div className=" h-5 w-20 rounded bg-green-300"></div>
+              <span className="ml-2">10</span>
+            </div>
+          </CardReport>
+          <CardReport>
+            <AirIcon />
+            {"Humidity"}
+            <span className="inline-flex items-center">99 %</span>
+          </CardReport>
+          <p className="text-center">Last Update xx:xx</p>
         </div>
       </Content>
+      <button className="fixed bottom-5 right-5 border border-white rounded-[100%] p-3 bg-slate-500">
+        <PlayArrowIcon />
+      </button>
     </>
   );
 }

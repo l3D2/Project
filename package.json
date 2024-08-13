@@ -28,6 +28,8 @@
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
+    "react-router-dom": "^6.26.0",
+    "sweetalert2": "^11.12.4",
     "tailwind-typewriter": "^1.0.1"
   },
   "devDependencies": {

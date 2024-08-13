@@ -7,21 +7,25 @@ import GoogleMapView from "@/components/map";
 import CardStat from "@/components/cardStatus";
 import CardFilter from "@/components/cardFilter";
 import Divider from "@mui/material/Divider";
-import CardReport from "@/components/cardReport";
 import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 //Icon
-import ThermostatIcon from "@mui/icons-material/Thermostat";
-import AirIcon from "@mui/icons-material/Air";
-import WaterIcon from "@mui/icons-material/Water";
-import BoltIcon from "@mui/icons-material/Bolt";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import DevicesIcon from "@mui/icons-material/Devices";
 
 export default function Dashboard() {
-  const { data: session } = useSession();
-  console.log(session);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  // Check status session
+  if (status === "loading") {
+    return null; //Loading indicator
+  }
+
+  if (!session) {
+    router.replace("/auth/signin");
+    return null;
+  }
   return (
     <>
       <Navbar session={session} />
@@ -55,7 +59,9 @@ export default function Dashboard() {
               <CardFilter />
             </div>
           </div>
-          <Divider className="my-1 bg-gray-600" style={{ height: "1.5px" }} />
+          <div className="my-2">
+            <Divider className="bg-gray-600" style={{ height: "2px" }} />
+          </div>
           <GoogleMapProvider>
             <GoogleMapView />
           </GoogleMapProvider>

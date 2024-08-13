@@ -2,7 +2,7 @@ import Header from "./header";
 import Divider from "@mui/material/Divider";
 export default function Content({ children }) {
   return (
-    <div className="p-2 xl:ml-64 lg:ml-60">
+    <div className="p-2 xl:ml-64 lg:ml-60 min-h-screen">
       <Header>{children[0]}</Header>
       <div className="p-2 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 h-fit">
         {children.length > 2 ? (

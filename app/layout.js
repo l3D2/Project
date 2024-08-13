@@ -7,10 +7,6 @@ import AuthProvider from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const metadata = {
-  title: "Water Application",
-};
-
 export default function RootLayout({ children }) {
   // Variables
   const [userLocation, setUserLocation] = useState([]); // Save user location
@@ -32,8 +28,13 @@ export default function RootLayout({ children }) {
   };
   return (
     <html lang="en">
+      <head>
+        <title>Water Application</title>
+      </head>
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <div className="relative">
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   );

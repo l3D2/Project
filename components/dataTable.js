@@ -1,57 +1,12 @@
 import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
-
-// const columns = [
-//   { field: "id", headerName: "ID", width: 80 },
-//   {
-//     field: "DateTime",
-//     headerName: "DateTime",
-//     type: "dateTime",
-//     valueGetter: (value) => value && new Date(value),
-//     width: 250,
-//     editable: false,
-//   },
-//   {
-//     field: "EC",
-//     headerName: "EC",
-//     width: 90,
-//     type: "number",
-//     editable: false,
-//   },
-//   {
-//     field: "PH",
-//     headerName: "PH",
-//     width: 90,
-//     type: "number",
-//     editable: false,
-//   },
-//   {
-//     field: "tempW",
-//     headerName: "Temperature💧",
-//     type: "number",
-//     width: 150,
-//     editable: false,
-//   },
-//   {
-//     field: "tempA",
-//     headerName: "Temperature🌡️",
-//     type: "number",
-//     width: 150,
-//     editable: false,
-//   },
-// ];
-
-// const rows = [
-//   { id: 1, DateTime: "11/11/11", firstName: "Jon", age: 14 },
-//   { id: 2, DateTime: "12/11/11", firstName: "Cersei", age: 31 },
-// ];
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
 export default function DataTable({ columns, rows }) {
   return (
     <div style={{ width: "100%" }}>
-      <div>
+      <div className="text-white">
         <DataGrid
-          className="text-black bg-white"
+          className="text-white"
           columns={columns}
           rows={rows}
           autoHeight
@@ -60,6 +15,34 @@ export default function DataTable({ columns, rows }) {
               paginationModel: {
                 pageSize: 5,
               },
+            },
+          }}
+          sx={{
+            boxShadow: 1.5,
+            border: 2,
+            borderColor: "gray",
+            color: "white",
+            "& .MuiDataGrid-row": {
+              backgroundColor: "#37465c",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "lightgrey",
+                color: "black",
+              },
+            },
+            "& .super-app-theme--header": {
+              backgroundColor: "#37465c",
+              color: "white",
+            },
+            "& .MuiIconButton-root": {
+              backgroundColor: "white",
+            },
+            "& .MuiSvgIcon-root": {
+              color: "black",
+            },
+            "& .MuiDataGrid-footerContainer,.MuiTablePagination-root": {
+              backgroundColor: "#37465c",
+              color: "white",
             },
           }}
           pageSizeOptions={[5, 10]}
