@@ -6,11 +6,14 @@ const logger = require("morgan");
 
 //Import Module Router
 const api_user = require("./Router/user");
+const api_data = require("./Router/data");
+
+//Default port
 const port = process.env.API_PORT || 3000;
 
 app.use(
   cors({
-    origin: "*", // Wildcard is NOT for Production
+    origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
@@ -20,6 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //Router Call
 app.use("/api", api_user);
+app.use("/api", api_data);
 
 app.post("/", (req, res) => {
   let json = req.body;
