@@ -18,16 +18,16 @@ export default function Navbar({ session }) {
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar visibility
 
   const fetchCountDevices = async () => {
-    const data = {
-      userid: session.user.id,
-    };
-    const res = await fetch("https://api.bd2-cloud.net/api/device/getCount", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const id = session.user.id;
+    const res = await fetch(
+      `https://api.bd2-cloud.net/api/device/getCount/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const json = await res.json();
     if (res.ok) {
       setCountDevices(json);

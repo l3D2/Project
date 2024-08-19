@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import axios from "axios";
 import { useEffect, useState } from "react";
 
 //components
@@ -22,7 +21,44 @@ import InfoIcon from "@mui/icons-material/Info";
 
 export default function Devices() {
   const { data: session, status } = useSession();
+  const [data, setData] = useState({});
   const [open, setOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [rows, setRows] = useState([]);
+
+  const fetchDevices = async () => {
+    const id = session.user.id;
+    const res = await fetch(`https://api.bd2-cloud.net/api/device/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json = await res.json();
+    if (res.ok) {
+      setData(json);
+      console.log("Fetched devices:", json);
+      formatData(json);
+      console.log("Formatted data:", rows);
+    } else {
+      console.error("Failed to fetch device.");
+    }
+  };
+
+  const formatData = (d) => {
+    const result = Object.values(d).map((item, index) => ({
+      id: item.device_id,
+      datetime: item.register_ts,
+      name: item.device_name,
+    }));
+    setRows(result);
+  };
+
+  useEffect(() => {
+    if (session && session.user) {
+      fetchDevices();
+    }
+  }, [session]);
 
   // Check status session
   if (status === "loading") {
@@ -55,9 +91,8 @@ export default function Devices() {
     console.log("Add new device");
   };
 
-  const handleEdit = (id) => {
+  const handleEdit = async (id) => {
     console.log(`Edit device with id: ${id}`);
-    // Implement your edit logic here
   };
 
   const handleDelete = (id) => {
@@ -78,7 +113,8 @@ export default function Devices() {
       field: "id",
       headerName: "ID",
       headerClassName: "super-app-theme--header",
-      width: 80,
+      //width: 80,
+      flex: 0.8,
       resizable: false,
     },
     {
@@ -96,7 +132,7 @@ export default function Devices() {
       headerName: "Device Name",
       headerClassName: "super-app-theme--header",
       type: "string",
-      flex: 1,
+      flex: 0.5,
       editable: false,
       resizable: false,
     },
@@ -105,13 +141,13 @@ export default function Devices() {
       headerName: "Action",
       headerClassName: "super-app-theme--header",
       type: "actions",
-      flex: 0.25,
+      flex: 0.4,
       resizable: false,
       getActions: ({ id }) => [
         <GridActionsCellItem
           icon={<InfoIcon />}
           label="Info"
-          onClick={() => console.log(`Add device with id: ${id}`)}
+          onClick={() => console.log(`INfo device with id: ${id}`)}
         />,
         <GridActionsCellItem
           icon={<EditIcon />}
@@ -125,11 +161,6 @@ export default function Devices() {
         />,
       ],
     },
-  ];
-
-  const rows = [
-    { id: 1, datetime: "11/11/11", name: "Jon", age: 14 },
-    { id: 2, datetime: "12/11/11", name: "Cersei", age: 31 },
   ];
 
   const style = {
@@ -156,7 +187,7 @@ export default function Devices() {
           <DataTable columns={columns} rows={rows} />
         </div>
       </Content>
-      {/* Modal */}
+      {/* Modal Add Device */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -202,6 +233,15 @@ export default function Devices() {
             </button>
           </div>
         </Box>
+      </Modal>
+      {/* Modal Edit Device */}
+      <Modal
+        open={open}
+        onClose={handleEdit}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box sx={{ ...style, width: 800 }}></Box>
       </Modal>
       {/* Btn to open Modal */}
       <div className=" absolute bottom-5 right-5">
