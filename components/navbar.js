@@ -1,3 +1,5 @@
+"use client";
+//Icons
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DevicesIcon from "@mui/icons-material/Devices";
 import ReportIcon from "@mui/icons-material/Report";
@@ -5,12 +7,47 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ContactPageIcon from "@mui/icons-material/ContactPage";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+
+import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 
 export default function Navbar({ session }) {
+  const [countDevices, setCountDevices] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar visibility
+
+  const fetchCountDevices = async () => {
+    const data = {
+      userid: session.user.id,
+    };
+    const res = await fetch("https://api.bd2-cloud.net/api/device/getCount", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (res.ok) {
+      setCountDevices(json);
+    } else {
+      console.error("Failed to fetch device count:");
+    }
+  };
+
+  useEffect(() => {
+    fetchCountDevices();
+  }, []);
+
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
   };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <>
       <button
@@ -18,28 +55,32 @@ export default function Navbar({ session }) {
         data-drawer-toggle="separator-sidebar"
         aria-controls="separator-sidebar"
         type="button"
-        className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        onClick={toggleSidebar} // Toggle sidebar visibility
+        className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
       >
         <span className="sr-only">Open sidebar</span>
+        <MenuIcon className="text-white" />
       </button>
 
       <aside
         id="separator-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full lg:translate-x-0 max-xl:w-60"
+        className={` fixed top-0 left-0 z-40 w-64 h-full transition-transform lg:translate-x-0 max-xl:w-60 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`} // Apply class based on state
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <div className="relative h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <div className="flex items-center">
             <div>
               <img
                 src={session?.user?.image}
                 alt=""
-                width={80}
-                height={80}
+                width={75}
+                height={75}
                 style={{ borderRadius: "5%" }}
               />
             </div>
-            <div className="ml-5">
+            <div className="ml-3">
               <span style={{ fontSize: "14px" }}>
                 Hello 👋{" "}
                 <span className="inline-flex items-center px-1 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
@@ -63,7 +104,7 @@ export default function Navbar({ session }) {
             </h6>
             <li>
               <a
-                href="#"
+                href="/dashboard"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <DashboardIcon />
@@ -72,13 +113,13 @@ export default function Navbar({ session }) {
             </li>
             <li>
               <a
-                href="#"
+                href="devices"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <DevicesIcon />
                 <span className="flex-1 ms-3 whitespace-nowrap">Devices</span>
                 <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                  10
+                  {countDevices}
                 </span>
               </a>
             </li>
@@ -125,6 +166,14 @@ export default function Navbar({ session }) {
               Logout
             </button>
           </div>
+          {/* left-56 */}
+          <button
+            className="absolute top-1/2 left-52 p-3 bg-gray-700 rounded-full lg:hidden hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-200"
+            type="button"
+            onClick={toggleSidebar}
+          >
+            <ArrowBackIosIcon className="text-xs" />
+          </button>
         </div>
       </aside>
     </>

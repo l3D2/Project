@@ -10,16 +10,47 @@ import Divider from "@mui/material/Divider";
 import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 //Icon
 import DevicesIcon from "@mui/icons-material/Devices";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
+  const [countDevices, setCountDevices] = useState(0);
   const router = useRouter();
+
+  // Fetch device count function
+  const fetchCountDevices = async () => {
+    if (session && session.user) {
+      const data = {
+        userid: session.user.id,
+      };
+      const res = await fetch("https://api.bd2-cloud.net/api/device/getCount", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setCountDevices(json);
+      } else {
+        console.error("Failed to fetch device count:");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (session && session.user) {
+      fetchCountDevices();
+    }
+  }, [session]);
+
   // Check status session
   if (status === "loading") {
-    return null; //Loading indicator
+    return null; // Loading indicator
   }
 
   if (!session) {
@@ -37,7 +68,7 @@ export default function Dashboard() {
               <CardStat>
                 <DevicesIcon />
                 {"Device"}
-                {"100"}
+                {countDevices}
               </CardStat>
               <CardStat>
                 <DevicesIcon />
