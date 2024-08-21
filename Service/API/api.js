@@ -7,6 +7,7 @@ const logger = require("morgan");
 //Import Module Router
 const api_user = require("./Router/user");
 const api_data = require("./Router/data");
+const api_device = require("./Router/device");
 
 //Default port
 const port = process.env.API_PORT || 3000;
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Router Call
 app.use("/api", api_user);
 app.use("/api", api_data);
+app.use("/api", api_device);
 
 app.post("/", (req, res) => {
   let json = req.body;
