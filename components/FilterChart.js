@@ -90,10 +90,41 @@ const dataSets = [
         ],
     },
 ];
-
+// array 1 have 2 index and array 2 have 1 index
+const dataFake2 = [
+    {
+        device_id: "07408530-4b22-11ef-968b-42fe22515858",
+        datetime: "2022-01-01T10:00:00",
+    },
+    {
+        device_id: "07408530-4b22-11ef-968b-42fe22515858",
+        datetime: "2022-01-01T11:00:00",
+    },
+    {
+        device_id: "17408530-4b22-11ef-968b-42fe22515858",
+        datetime: "2022-01-02T11:00:00",
+    },
+    {
+        device_id: "17408530-4b22-11ef-968b-42fe22515858",
+        datetime: "2022-01-01T11:00:00",
+    },
+];
+const timeData = [
+    new Date(2023, 7, 31),
+    new Date(2023, 7, 31, 12),
+    new Date(2023, 8, 1),
+    new Date(2023, 8, 1, 12),
+    new Date(2023, 8, 2),
+    new Date(2023, 8, 2, 12),
+    new Date(2023, 8, 3),
+    new Date(2023, 8, 3, 12),
+    new Date(2023, 8, 4),
+    new Date(2023, 8, 5),
+    new Date(2023, 9, 10),
+];
 function FilterChart() {
     const [filterChart, setFilterChart] = useState([]);
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     // fetch data from phpmyadmin
@@ -105,7 +136,6 @@ function FilterChart() {
                     "https://api.bd2-cloud.net/api/data"
                 );
                 setData(response.data);
-                console.log(response.data.length);
             } catch (error) {
                 setError(error);
             } finally {
@@ -115,39 +145,68 @@ function FilterChart() {
 
         fetchData();
     }, []);
+    console.log(data);
+    function transformData(data) {
+        const groupedData = {};
 
-    // label data
-    const labelData = {
-        label: "Stock Device",
-        data: (data)=>{
-            const test = {};
-            const i = 0;
-            for(){
-
+        // จัดกลุ่มข้อมูลตาม device_id และวันที่
+        data.forEach((item) => {
+            const date = item.datetime.split("T")[0];
+            const deviceId = item.device_id;
+            if (!groupedData[date]) {
+                groupedData[date] = new Set();
             }
-        },
-        //data?.map((item)=>{}),
-        // data: data?.map((items) => ({
-        //     device_id: items.device_id,
-        //     datetime: items.datetime,
-        // })),
-    };
-    console.log(labelData);
+            groupedData[date].add(deviceId);
+        });
+
+        // สร้างโครงสร้างข้อมูลใหม่
+        const dataSets = [];
+        dataSets.push({
+            value: "Stock Device",
+            dataSet: Object.entries(groupedData).map(([date, deviceIds]) => ({
+                date,
+                data: deviceIds.size,
+            })),
+        });
+        return dataSets;
+    }
+
+    const result = transformData(data);
+    // console.log(result);
     const handleChange = (event) => {
         const {
             target: { value },
         } = event;
         setFilterChart(value); // Update state with selected values
     };
+    const y1 = [5, 5, 10, 90, 85, 70, 30, 25, 25];
 
-    const filteredData = dataSets.filter((item) =>
+    const filteredData = result.filter((item) =>
         filterChart.includes(item.value)
     ); // Filter data based on selection
+    // console.log(filteredData);
     const filteredDataSeries = filteredData.map((item) => ({
         data: item.dataSet.map((dataSetItem) => dataSetItem.data), // Get data from each dataSet item
         label: item.value,
     }));
-
+    console.log(filteredDataSeries);
+    const filteredxAxis = result.flatMap((dataSet) =>
+        dataSet.dataSet.map((item) => new Date(item.date))
+    );
+    // console.log(filteredxAxis);
+    const valueFormatter = (date) => {
+        return date.toLocaleDateString("th-TH", {
+            year: "2-digit",
+            month: "2-digit",
+            day: "2-digit",
+        });
+    };
+    const xAxisCommon = {
+        data: timeData,
+        scaleType: "time",
+        valueFormatter,
+        domain: [new Date(2023, 7, 31), new Date(2023, 9, 10)],
+    };
     return (
         <div>
             <FormControl sx={{ mt: 2, width: "100%" }}>
@@ -162,7 +221,7 @@ function FilterChart() {
                     renderValue={(selected) => selected.join(", ")}
                     MenuProps={MenuProps}
                 >
-                    {dataSets.map((item) => (
+                    {result.map((item) => (
                         <MenuItem key={item.value} value={item.value}>
                             <Checkbox
                                 checked={filterChart.includes(item.value)}
@@ -174,11 +233,24 @@ function FilterChart() {
             </FormControl>
 
             <LineChart
-                xAxis={[{ data: [1, 2, 3, 4, 5, 6] }]} // Replace with your actual x-axis data
+                xAxis={[
+                    {
+                        ...xAxisCommon,
+                        domain: [new Date(2023, 8, 31), new Date(2023, 9, 10)],
+                        tickInterval: 1,
+                    },
+                ]} // Replace with your actual x-axis data
                 series={filteredDataSeries} // Use filtered data series
+                yAxis={[{ id: "linearAxis", scaleType: "linear" }]}
                 width={500}
                 height={300}
             />
+            {/* <LineChart
+                xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }]} // Replace with your actual x-axis data
+                series={filteredDataSeries} // Use filtered data series
+                width={500}
+                height={300}
+            /> */}
         </div>
     );
 }

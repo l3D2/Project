@@ -23,6 +23,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 // graph
 import { LineChart } from "@mui/x-charts/LineChart";
 import FilterChart from "@/components/FilterChart";
+import FilterChart2 from "@/components/FilterChart2";
 import TimeFilter from "@/components/TimeFilter";
 import { useState } from "react";
 
@@ -65,15 +66,38 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="width-fit">
-                            {/* filter */}
-                            <TimeFilter />z
                             <FilterChart
                                 className="width-fit"
                                 dataSet={getDataSet}
                             />
+                            {/* <FilterChart2 /> */}
+
+                            <TimeFilter />
+
                             <LineChart
                                 className="w-full"
-                                xAxis={[{ data: [1, 2, 3, 5, 8, 10, 11, 12] }]}
+                                xAxis={[
+                                    {
+                                        id: "time",
+                                        data: [1, 2, 3, 5, 8, 10, 11, 12],
+                                    },
+                                ]}
+                                series={[
+                                    {
+                                        data: [1, 4, 3, 5, 6, 8, 9, 10],
+                                    },
+                                ]}
+                                height={300}
+                            />
+
+                            <LineChart
+                                className="w-full"
+                                xAxis={[
+                                    {
+                                        id: "time",
+                                        data: [1, 2, 3, 5, 8, 10, 11, 12],
+                                    },
+                                ]}
                                 series={[
                                     {
                                         data: [1, 4, 3, 5, 6, 8, 9, 10],
