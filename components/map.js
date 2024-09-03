@@ -4,15 +4,14 @@ import React from "react";
 import Skeleton from "@mui/material/Skeleton";
 import { useGoogleMap } from "@/context/GoogleMapProvider";
 
-export default function GoogleMapView() {
+export default function GoogleMapView(location) {
   const containerStyle = {
     width: "100%",
     height: "80vh",
     borderRadius: "0.25rem",
   };
-  const coordinates = { lat: 51.5074, lng: 0.1278 };
+  console.log(location.location);
   const isLoaded = useGoogleMap();
-
   if (!isLoaded) {
     return (
       <Skeleton
@@ -28,7 +27,7 @@ export default function GoogleMapView() {
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={coordinates}
+      center={location.location}
       zoom={13}
     />
   );

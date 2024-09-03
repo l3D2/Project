@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 //components
 import Navbar from "@/components/navbar";
@@ -24,6 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 
 export default function Devices() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [data, setData] = useState({});
   const [open, setOpen] = useState(false);

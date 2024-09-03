@@ -10,7 +10,8 @@ import Divider from "@mui/material/Divider";
 import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserLocationContext } from "@/context/context";
 
 //Icon
 import DevicesIcon from "@mui/icons-material/Devices";
@@ -19,7 +20,7 @@ export default function Dashboard() {
   const { data: session, status } = useSession();
   const [countDevices, setCountDevices] = useState(0);
   const router = useRouter();
-
+  const { location } = useContext(UserLocationContext);
   // Fetch device count function
   const fetchCountDevices = async () => {
     if (session && session.user) {
@@ -57,6 +58,7 @@ export default function Dashboard() {
     router.replace("/auth/signin");
     return null;
   }
+
   return (
     <>
       <Navbar session={session} />
@@ -94,7 +96,7 @@ export default function Dashboard() {
             <Divider className="bg-gray-600" style={{ height: "2px" }} />
           </div>
           <GoogleMapProvider>
-            <GoogleMapView />
+            <GoogleMapView location={location} />
           </GoogleMapProvider>
         </div>
         <div className="grid w-full gap-2">
