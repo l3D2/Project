@@ -1,25 +1,23 @@
 "use client";
+
 import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 import Content from "@/components/content";
 import CardDevice from "@/components/cardDevice";
 import GoogleMapView from "@/components/map";
 import CardStat from "@/components/cardStatus";
 import CardFilter from "@/components/cardFilter";
 import Divider from "@mui/material/Divider";
-import CardReport from "@/components/cardReport";
-
+import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useContext } from "react";
+import { UserLocationContext } from "@/context/context";
 
 //Icon
-import ThermostatIcon from "@mui/icons-material/Thermostat";
-import AirIcon from "@mui/icons-material/Air";
-import WaterIcon from "@mui/icons-material/Water";
-import BoltIcon from "@mui/icons-material/Bolt";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import DevicesIcon from "@mui/icons-material/Devices";
 
 export default function Dashboard() {
+<<<<<<< HEAD
     const { data: session } = useSession();
     console.log(session);
     return (
@@ -28,11 +26,62 @@ export default function Dashboard() {
             <Content>
                 <div>
                     {/* <div className="grid grid-cols-4 gap-x-2">
+=======
+  const { data: session, status } = useSession();
+  const [countDevices, setCountDevices] = useState(0);
+  const router = useRouter();
+  const { location } = useContext(UserLocationContext);
+  // Fetch device count function
+  const fetchCountDevices = async () => {
+    if (session && session.user) {
+      const id = session.user.id;
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/device/getCount/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      if (res.ok) {
+        setCountDevices(json);
+      } else {
+        console.error("Failed to fetch device count:");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (session && session.user) {
+      fetchCountDevices();
+    }
+  }, [session]);
+
+  // Check status session
+  if (status === "loading") {
+    return null; // Loading indicator
+  }
+
+  if (!session) {
+    router.replace("/auth/signin");
+    return null;
+  }
+
+  return (
+    <>
+      <Navbar session={session} />
+      <Content>
+        {"Dashboard"}
+        <div>
+          <div className="grid grid-cols-4 gap-x-2">
+>>>>>>> frontend
             <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
               <CardStat>
                 <DevicesIcon />
                 {"Device"}
-                {"100"}
+                {countDevices}
               </CardStat>
               <CardStat>
                 <DevicesIcon />
@@ -53,6 +102,7 @@ export default function Dashboard() {
             <div className="col-span-2 row-span-2">
               <CardFilter />
             </div>
+<<<<<<< HEAD
           </div> */}
                     <Divider
                         className="my-1 bg-gray-600"
@@ -101,4 +151,20 @@ export default function Dashboard() {
             </Content>
         </>
     );
+=======
+          </div>
+          <div className="my-2">
+            <Divider className="bg-gray-600" style={{ height: "2px" }} />
+          </div>
+          <GoogleMapProvider>
+            <GoogleMapView location={location} />
+          </GoogleMapProvider>
+        </div>
+        <div className="grid w-full gap-2">
+          <CardDevice />
+        </div>
+      </Content>
+    </>
+  );
+>>>>>>> frontend
 }

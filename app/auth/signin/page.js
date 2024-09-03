@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -7,11 +8,27 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
+
+  const handleLogin = async (e) => {
+    console.log(email, password);
+    try {
+      await signIn("credentials", {
+        email, //Username to Login
+        password, //Password to Login
+        redirect: false, //Redirect true
+      });
+      router.replace("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleGoogle = async () => {
     try {
-      await signIn("google", { callbackUrl: false }); //"/dashboard"
-      //router.replace("dashboard");
+      await signIn("google", { callbackUrl: "/dashboard" });
     } catch (error) {
       console.log(error);
     }
@@ -42,6 +59,7 @@ export default function login() {
                   name="email"
                   id="email"
                   placeholder="Email address"
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-3 py-2 mb-1 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
                 />
                 <label
@@ -55,6 +73,7 @@ export default function login() {
                   name="password"
                   id="password"
                   placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
                 />
               </div>
@@ -62,6 +81,7 @@ export default function login() {
                 <button
                   type="button"
                   className="w-full px-3 py-3 text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none duration-100 ease-in-out"
+                  onClick={handleLogin}
                 >
                   SignIn
                 </button>

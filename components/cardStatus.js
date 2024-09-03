@@ -9,7 +9,7 @@ export default function CardStat({ children }) {
         </div>
         <div>
           <div className="text-gray-400">{children[1]}</div>
-          <div className="text-2xl font-bold text-gray-900">{children[2]}</div>
+          <div className="text-1xl font-bold text-gray-900">{children[2]}</div>
         </div>
       </div>
     </div>

@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import axios from "axios";
-
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -16,25 +15,120 @@ export const authOptions = {
         },
       },
     }),
-    // GitHubProvider({
-    //   clientId: process.env.GITHUB_ID,
-    //   clientSecret: process.env.GITHUB_SECRET,
-    // }),
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {},
+      async authorize(credentials, req) {
+        if (!credentials.email || !credentials.password) {
+          return null;
+        }
+
+        const data = {
+          email: credentials.email,
+        };
+
+        const response = await fetch(
+          "https://api.bd2-cloud.net/api/user/get-user",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (response.ok) {
+          const userData = await response.json();
+          const user = userData[0];
+          console.log(user.password);
+          if (!user.password) {
+            console.error("User has no password field.");
+            return null;
+          }
+
+          const isPasswordCorrect = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
+          if (!isPasswordCorrect) {
+            console.error("Password does not match.");
+            return null;
+          }
+
+          return user;
+        } else {
+          console.error("Failed to fetch user data.");
+          return null;
+        }
+      },
+    }),
   ],
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ user, account, profile }) {
       if (account.provider === "google") {
-        console.log("callback => ", profile);
-        try {
-        } catch (err) {
-          console.log(err);
+        //console.log("callback => ", profile);
+        const data = {
+          email: profile.email,
+        };
+        //CheckUserRegistration
+        const response = await fetch(
+          "http://api.bd2-cloud.net/api/user/get-user",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          //console.log("User is registered:", responseData);
+          user.response = responseData[0];
+          return true;
+        } else if (response.status === 404) {
+          return `/auth/register?email=${profile.email}&name=${profile.name}&imgurl=${profile.picture}`;
+        } else {
+          console.error("Error checking registration:");
         }
+      } else if (account.provider === "credentials") {
+        console.log("callback => ", user);
+        return true;
       }
-      return true; // Do different verification for other providers that don't have `email_verified`
+      return true;
+    },
+    async session({ session, token, user }) {
+      if (token.provider === "google") {
+        session.user.provider = "google";
+      } else if (token.provider === "credentials") {
+        session.user.provider = "credentials";
+      }
+      session.user.id = token.id || token.user.account_id;
+      session.user.role = token.role || token.user.role;
+      session.user.image = token.image || token.user.imgurl;
+
+      return session;
+    },
+
+    async jwt({ token, user, account }) {
+      if (account) {
+        token.provider = account.provider; // Store the provider in the token
+      }
+
+      if (user) {
+        token.user = user.response;
+        token.id = user.account_id;
+        token.role = user.role;
+        token.image = user.imgurl; // Assuming your user object has a role property
+      }
+
+      return token;
     },
   },
 };
