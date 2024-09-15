@@ -1,16 +1,7 @@
 import random
 from datetime import datetime, timedelta
 import mysql.connector
-
-# ข้อมูลเชื่อมต่อฐานข้อมูล
-mydb = mysql.connector.connect(
-    host="210.246.215.31",
-    user="maiok01",
-    password="maiok01",
-    database="IoT_DB",
-)
-
-mycursor = mydb.cursor()
+from mysql.connector import Error
 
 
 def generate_random_data(start_date, end_date):
@@ -29,27 +20,67 @@ def generate_random_data(start_date, end_date):
     Temp = random.randint(0, 50)
     Humidity = random.randint(0, 100)
 
-    sql = "INSERT INTO Device_Data (device_id, datetime, EC, Temp_Water, PH, Temp, Humidity) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    val = (device_id, random_time, EC, Temp_Water, PH, Temp, Humidity)
-    mycursor.execute(sql, val)
     return random_time, EC, Temp_Water, PH, Temp, Humidity
 
 
-# กำหนดค่าคงที่
-device_id = random.choice(
-    ["7303650f-4b24-11ef-968b-42fe22515858", "73076da4-4b24-11ef-968b-42fe22515858"]
-)
-start_date = datetime(2023, 1, 1)  # ปรับช่วงวันที่ตามต้องการ
-end_date = datetime(2023, 12, 31)
+def insert_data(mycursor, device_id, random_time, EC, Temp_Water, PH, Temp, Humidity):
+    sql = "INSERT INTO Device_Data (device_id, datetime, EC, Temp_Water, PH, Temp, Humidity) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = (device_id, random_time, EC, Temp_Water, PH, Temp, Humidity)
+    mycursor.execute(sql, val)
 
-# สร้างข้อมูลสุ่ม 10 รายการ (ปรับจำนวนตามต้องการ)
-for _ in range(365):
-    random_time, EC, Temp_Water, PH, Temp, Humidity = generate_random_data(
-        start_date, end_date
-    )
 
-    # สร้างคำสั่ง INSERT (ปรับตามโครงสร้างตารางของคุณ)
-    insert_query = f"INSERT INTO Device_Data (device_id, datetime, EC, Temp_Water, PH, Temp, Humidity) VALUES ('{device_id}', '{random_time}', {EC}, {Temp_Water}, {PH}, {Temp}, {Humidity})"
-    print(insert_query)
-    mydb.commit()
-    print(mycursor.rowcount, "record(s) inserted.")
+def main():
+    try:
+        # ข้อมูลเชื่อมต่อฐานข้อมูล
+        mydb = mysql.connector.connect(
+            host="210.246.215.31",
+            user="maiok01",
+            password="maiok01",
+            database="IoT_DB",
+        )
+
+        if mydb.is_connected():
+            mycursor = mydb.cursor()
+
+            # กำหนดค่าคงที่
+            device_ids = [
+                "0c6d9046-4b22-11ef-968b-42fe22515858",
+                "7303650f-4b24-11ef-968b-42fe22515858",
+                "73076da4-4b24-11ef-968b-42fe22515858",
+                "73058b2b-4b24-11ef-968b-42fe22515858",
+                "730931a7-4b24-11ef-968b-42fe22515858",
+                "730b5938-4b24-11ef-968b-42fe22515858",
+                "730cdb82-4b24-11ef-968b-42fe22515858",
+                "730eb16d-4b24-11ef-968b-42fe22515858",
+                "73103874-4b24-11ef-968b-42fe22515858",
+                "7311c01b-4b24-11ef-968b-42fe22515858",
+                "73134662-4b24-11ef-968b-42fe22515858",
+                "f254aa61-4b21-11ef-968b-42fe22515858",
+            ]
+            start_date = datetime(2024, 8, 14)  # ปรับช่วงวันที่ตามต้องการ
+            end_date = datetime.today()
+
+            # สร้างข้อมูลสุ่ม 1200 รายการ (ปรับจำนวนตามต้องการ)
+            for _ in range(1200):
+                device_id = random.choice(device_ids)
+                random_time, EC, Temp_Water, PH, Temp, Humidity = generate_random_data(
+                    start_date, end_date
+                )
+                insert_data(
+                    mycursor, device_id, random_time, EC, Temp_Water, PH, Temp, Humidity
+                )
+
+            mydb.commit()
+            print(mycursor.rowcount, "record(s) inserted.")
+
+    except Error as e:
+        print("Error while connecting to MySQL", e)
+    finally:
+        if mydb.is_connected():
+            mycursor.close()
+            mydb.close()
+            print("MySQL connection is closed")
+
+
+if __name__ == "__main__":
+    main()

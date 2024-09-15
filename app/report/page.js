@@ -206,7 +206,7 @@ export default function report() {
                 },
               }}
             />
-            <button onClick={}>Send</button>
+            {/* <button onClick={}>Send</button> */}
           </div>
         </div>
       </Content>

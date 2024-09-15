@@ -13,9 +13,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 
 function generate(element) {
     return [0, 1, 2].map((value) =>
@@ -32,16 +33,47 @@ const Demo = styled("div")(({ theme }) => ({
 export default function ListAdmin() {
     const [dense, setDense] = React.useState(false);
     const [secondary, setSecondary] = React.useState(false);
+    const [items, setItems] = React.useState([0, 1, 2]);
+
+    const handleDelete = (value) => {
+        setItems((prevItems) => prevItems.filter((item) => item !== value));
+    };
+
+    const handleAdd = () => {
+        setItems((prevItems) => [...prevItems, prevItems.length]);
+    };
 
     return (
         <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
             <Grid item xs={12} md={6}>
                 <Demo>
+                    <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{ padding: "10px" }}
+                    >
+                        <div>Add Administrator</div>
+                        <IconButton
+                            color="primary"
+                            aria-label="add"
+                            onClick={handleAdd}
+                            className="p-1" // ลด padding ของ IconButton
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Box>
+
                     <List dense={dense}>
-                        {generate(
+                        {items.map((value) => (
                             <ListItem
+                                key={value}
                                 secondaryAction={
-                                    <IconButton edge="end" aria-label="delete">
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="delete"
+                                        onClick={() => handleDelete(value)}
+                                    >
                                         <DeleteIcon />
                                     </IconButton>
                                 }
@@ -52,7 +84,7 @@ export default function ListAdmin() {
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary="Single-line item"
+                                    primary={`Item ${value}`}
                                     secondary={
                                         secondary ? "Secondary text" : null
                                     }
@@ -62,7 +94,7 @@ export default function ListAdmin() {
                                     }}
                                 />
                             </ListItem>
-                        )}
+                        ))}
                     </List>
                 </Demo>
             </Grid>
