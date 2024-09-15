@@ -14,6 +14,8 @@ import { useState, useEffect, useContext } from "react";
 import { UserLocationContext } from "@/context/context";
 import CardAdmin from "@/components/cardAdmin";
 import ListAdmin from "@/components/ListAdmin";
+import UserChart from "@/components/UserChart";
+import dayjs from "dayjs";
 
 //Icon
 import DevicesIcon from "@mui/icons-material/Devices";
@@ -26,6 +28,8 @@ export default function AdminDashboard() {
     const [countDevices, setCountDevices] = useState(0);
     const router = useRouter();
     const { location } = useContext(UserLocationContext);
+    const [lastUpdateTime, setLastUpdateTime] = useState(dayjs());
+
     // Fetch device count function
     const fetchCountDevices = async () => {
         if (session && session.user) {
@@ -71,35 +75,37 @@ export default function AdminDashboard() {
                 {"Dashboard"}
                 <div>
                     <div className="grid grid-cols-4 gap-x-2">
-                        <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
-                            <CardStat>
+                        <div className="grid grid-cols-4 gap-2 col-span-4">
+                            <CardStat className="col-span-1">
                                 <DevicesIcon />
                                 {"Stock Device"}
                                 {"100"}
                             </CardStat>
-                            <CardStat>
+                            <CardStat className="col-span-1">
                                 <CloudIcon />
                                 {"Cloud"}
                                 {"100"}
                             </CardStat>
-                            <CardStat>
+                            <CardStat className="col-span-1">
                                 <ApiIcon />
                                 {"API"}
                                 {"100"}
                             </CardStat>
-                            <CardStat>
+                            <CardStat className="col-span-1">
                                 <DevicesIcon />
                                 {"LINE"}
                                 {"100"}
                             </CardStat>
                         </div>
                     </div>
+
                     <div className="my-2">
                         <Divider
                             className="bg-gray-600"
                             style={{ height: "2px" }}
                         />
                     </div>
+                    <UserChart />
                 </div>
                 <div className="grid w-full gap-2">
                     {/* <CardDevice /> */}
@@ -107,7 +113,9 @@ export default function AdminDashboard() {
                         <AdminPanelSettingsIcon />
                         {"Administrator"}
                     </CardAdmin>
-                    <p className="text-center pb-2">Last Update xx:xx</p>
+                    <p className="text-center pb-2">
+                        Last Update {lastUpdateTime.format("HH:mm")}
+                    </p>
                 </div>
             </Content>
         </>

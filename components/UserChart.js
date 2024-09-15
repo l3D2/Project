@@ -3,10 +3,31 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 
+import {
+    Chart,
+    PointElement,
+    LineElement,
+    LinearScale,
+    Title,
+    Tooltip,
+    Legend,
+    CategoryScale,
+} from "chart.js";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Line } from "react-chartjs-2";
+
+Chart.register(
+    PointElement,
+    LineElement,
+    LinearScale,
+    Title,
+    Tooltip,
+    Legend,
+    CategoryScale
+);
 
 const filterDataByDate = (data, startDate, endDate) => {
     const start = dayjs(startDate);
@@ -85,14 +106,20 @@ const aggregateDataByYear = (data) => {
     }));
 };
 
-export default function FilterChart2() {
+const getDeviceIds = (data) => {
+    const deviceIds = data.map((item) => item.device_id);
+    return [...new Set(deviceIds)];
+};
+
+export default function UserChart() {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState(dayjs().subtract(1, "month"));
     const [endDate, setEndDate] = useState(dayjs());
     const [viewMode, setViewMode] = useState("day"); // "day", "month", "year"
-    const [selectedDeviceId, setSelectedDeviceId] = useState(""); // device_id selected
+    const [uniqueDeviceIds, setUniqueDeviceIds] = useState([]);
+    const [selectedDeviceId, setSelectedDeviceId] = useState("");
     const [optionsChart, setOptionsChart] = useState({});
     const [chartData, setChartData] = useState({
         labels: [],
@@ -118,6 +145,9 @@ export default function FilterChart2() {
                     "https://api.bd2-cloud.net/api/data"
                 );
                 setData(response.data);
+                const deviceIds = getDeviceIds(response.data);
+                setUniqueDeviceIds(deviceIds);
+                setSelectedDeviceId(deviceIds[0] || "");
             } catch (error) {
                 setError(error);
                 console.log(error);
@@ -129,13 +159,11 @@ export default function FilterChart2() {
         fetchData();
     }, []);
 
-    // ฟังก์ชันเพื่อดึง device_id ที่ไม่ซ้ำกันจาก data
-    const getDeviceIds = (data) => {
-        const deviceIds = data.map((item) => item.device_id);
-        return [...new Set(deviceIds)];
-    };
-
-    const uniqueDeviceIds = getDeviceIds(data);
+    useEffect(() => {
+        if (uniqueDeviceIds.length > 0) {
+            setSelectedDeviceId(uniqueDeviceIds[0]);
+        }
+    }, [uniqueDeviceIds]);
 
     const filteredByDeviceIdData = data.filter(
         (item) => item.device_id === selectedDeviceId
@@ -144,15 +172,12 @@ export default function FilterChart2() {
     const handleDeviceIdChange = (event) => {
         setSelectedDeviceId(event.target.value);
     };
-    console.log(filteredByDeviceIdData);
 
     const filteredData = filterDataByDate(
         filteredByDeviceIdData,
         startDate,
         endDate
     );
-
-    console.log(filteredData);
 
     const processedData =
         viewMode === "month"
@@ -235,13 +260,16 @@ export default function FilterChart2() {
     return (
         <>
             <div className="p-4">
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 items-center justify-center">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Start Date and Time"
                             value={startDate}
                             format="DD/MM/YYYY"
                             onChange={handleStartDateChange}
+                            shouldDisableDate={(date) =>
+                                endDate && date.isAfter(endDate, "day")
+                            }
                         />
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -250,17 +278,24 @@ export default function FilterChart2() {
                             value={endDate}
                             format="DD/MM/YYYY"
                             onChange={handleEndDateChange}
+                            shouldDisableDate={(date) =>
+                                startDate && date.isBefore(startDate, "day")
+                            }
                         />
                     </LocalizationProvider>
-                    <select
-                        value={viewMode}
-                        onChange={(e) => setViewMode(e.target.value)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                        <option value="day">View by Day</option>
-                        <option value="month">View by Month</option>
-                        <option value="year">View by Year</option>
-                    </select>
+                    <div className="">
+                        <label htmlFor="device-select">Select View Mode</label>
+                        <select
+                            id="viewmode-select"
+                            value={viewMode}
+                            onChange={(e) => setViewMode(e.target.value)}
+                            className="w-fit h-fit"
+                        >
+                            <option value="day">View by Day</option>
+                            <option value="month">View by Month</option>
+                            <option value="year">View by Year</option>
+                        </select>
+                    </div>
                     <div>
                         <label htmlFor="device-select">Select Device ID:</label>
                         <select
