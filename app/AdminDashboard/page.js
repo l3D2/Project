@@ -14,7 +14,7 @@ import { useState, useEffect, useContext } from "react";
 import { UserLocationContext } from "@/context/context";
 import CardAdmin from "@/components/cardAdmin";
 import ListAdmin from "@/components/ListAdmin";
-import UserChart from "@/components/UserChart";
+import AdminChart from "@/components/AdminChart";
 import dayjs from "dayjs";
 
 //Icon
@@ -23,6 +23,7 @@ import CloudIcon from "@mui/icons-material/Cloud";
 import ApiIcon from "@mui/icons-material/Api";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
+// Date
 export default function AdminDashboard() {
     const { data: session, status } = useSession();
     const [countDevices, setCountDevices] = useState(0);
@@ -105,7 +106,7 @@ export default function AdminDashboard() {
                             style={{ height: "2px" }}
                         />
                     </div>
-                    <UserChart />
+                    <AdminChart />
                 </div>
                 <div className="grid w-full gap-2">
                     {/* <CardDevice /> */}

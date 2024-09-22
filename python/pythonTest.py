@@ -12,6 +12,22 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
+# รายการ device_id ที่จะสุ่ม
+device_ids = [
+    "0c6d9046-4b22-11ef-968b-42fe22515858",
+    "7303650f-4b24-11ef-968b-42fe22515858",
+    "73076da4-4b24-11ef-968b-42fe22515858",
+    "73058b2b-4b24-11ef-968b-42fe22515858",
+    "730931a7-4b24-11ef-968b-42fe22515858",
+    "730b5938-4b24-11ef-968b-42fe22515858",
+    "730cdb82-4b24-11ef-968b-42fe22515858",
+    "730eb16d-4b24-11ef-968b-42fe22515858",
+    "73103874-4b24-11ef-968b-42fe22515858",
+    "7311c01b-4b24-11ef-968b-42fe22515858",
+    "73134662-4b24-11ef-968b-42fe22515858",
+    "f254aa61-4b21-11ef-968b-42fe22515858",
+]
+
 
 def generate_data_for_all_days(start_date, end_date):
     data_to_insert = []
@@ -21,6 +37,7 @@ def generate_data_for_all_days(start_date, end_date):
         random_time += timedelta(seconds=random.randint(0, 86399))
 
         # สุ่มค่าอื่นๆ (ปรับช่วงตามต้องการ)
+        device_id = random.choice(device_ids)
         EC = random.randint(1, 10)
         Temp_Water = random.randint(0, 100)
         PH = random.randint(0, 14)
@@ -39,9 +56,9 @@ def generate_data_for_all_days(start_date, end_date):
 
 
 # กำหนดค่าคงที่
-device_id = "7303650f-4b24-11ef-968b-42fe22515858"
-start_date = datetime(2021, 9, 13)  # ปรับช่วงวันที่ตามต้องการ
-end_date = datetime.today()
+for i in range(5):
+    start_date = datetime(2021, 9, 13)  # ปรับช่วงวันที่ตามต้องการ
+    end_date = datetime.today()
 
 # สร้างข้อมูลสุ่มสำหรับทุกวันในปี 2023
 generate_data_for_all_days(start_date, end_date)

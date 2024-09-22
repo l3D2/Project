@@ -8,6 +8,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 
 import { Line } from "react-chartjs-2";
+//
 function transformData(data) {
     const groupedData = {};
     // จัดกลุ่มข้อมูลตาม device_id และวันที่

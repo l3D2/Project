@@ -29,6 +29,26 @@ Chart.register(
     CategoryScale
 );
 
+// ฟังก์ชันนับจำนวน device_id ที่ไม่ซ้ำกันจากวันเดียวกัน
+const countUniqueDevices = (data) => {
+    const dateObject = {};
+
+    data.forEach((item) => {
+        const date = dayjs(item.datetime).format("YYYY-MM-DD");
+        if (!dateObject[date]) {
+            dateObject[date] = new Set();
+        }
+        dateObject[date].add(item.device_id);
+    });
+
+    const result = Object.keys(dateObject).map((date) => ({
+        stockDevice: dateObject[date].size,
+        datetime: date,
+    }));
+
+    return result;
+};
+
 const filterDataByDate = (data, startDate, endDate) => {
     const start = dayjs(startDate);
     const end = dayjs(endDate);
@@ -46,29 +66,19 @@ const aggregateDataByDay = (data) => {
         const day = dayjs(item.datetime).format("YYYY-MM-DD");
         if (!aggregatedData[day]) {
             aggregatedData[day] = {
-                EC: 0,
-                Humidity: 0,
-                PH: 0,
-                Temp: 0,
-                Temp_Water: 0,
+                stockDevice: 0,
                 count: 0,
             };
         }
-        aggregatedData[day].EC += item.EC;
-        aggregatedData[day].Humidity += item.Humidity;
-        aggregatedData[day].PH += item.PH;
-        aggregatedData[day].Temp += item.Temp;
-        aggregatedData[day].Temp_Water += item.Temp_Water;
+        aggregatedData[day].stockDevice += item.stockDevice;
         aggregatedData[day].count += 1;
     });
 
     return Object.keys(aggregatedData).map((day) => ({
         datetime: day,
-        EC: aggregatedData[day].EC / aggregatedData[day].count,
-        Humidity: aggregatedData[day].Humidity / aggregatedData[day].count,
-        PH: aggregatedData[day].PH / aggregatedData[day].count,
-        Temp: aggregatedData[day].Temp / aggregatedData[day].count,
-        Temp_Water: aggregatedData[day].Temp_Water / aggregatedData[day].count,
+        stockDevice: Math.round(
+            aggregatedData[day].stockDevice / aggregatedData[day].count
+        ),
     }));
 };
 
@@ -79,30 +89,19 @@ const aggregateDataByMonth = (data) => {
         const month = dayjs(item.datetime).format("YYYY-MM");
         if (!aggregatedData[month]) {
             aggregatedData[month] = {
-                EC: 0,
-                Humidity: 0,
-                PH: 0,
-                Temp: 0,
-                Temp_Water: 0,
+                stockDevice: 0,
                 count: 0,
             };
         }
-        aggregatedData[month].EC += item.EC;
-        aggregatedData[month].Humidity += item.Humidity;
-        aggregatedData[month].PH += item.PH;
-        aggregatedData[month].Temp += item.Temp;
-        aggregatedData[month].Temp_Water += item.Temp_Water;
+        aggregatedData[month].stockDevice += item.stockDevice;
         aggregatedData[month].count += 1;
     });
 
     return Object.keys(aggregatedData).map((month) => ({
         datetime: month,
-        EC: aggregatedData[month].EC / aggregatedData[month].count,
-        Humidity: aggregatedData[month].Humidity / aggregatedData[month].count,
-        PH: aggregatedData[month].PH / aggregatedData[month].count,
-        Temp: aggregatedData[month].Temp / aggregatedData[month].count,
-        Temp_Water:
-            aggregatedData[month].Temp_Water / aggregatedData[month].count,
+        stockDevice: Math.round(
+            aggregatedData[month].stockDevice / aggregatedData[month].count
+        ),
     }));
 };
 
@@ -113,30 +112,19 @@ const aggregateDataByYear = (data) => {
         const year = dayjs(item.datetime).format("YYYY");
         if (!aggregatedData[year]) {
             aggregatedData[year] = {
-                EC: 0,
-                Humidity: 0,
-                PH: 0,
-                Temp: 0,
-                Temp_Water: 0,
+                stockDevice: 0,
                 count: 0,
             };
         }
-        aggregatedData[year].EC += item.EC;
-        aggregatedData[year].Humidity += item.Humidity;
-        aggregatedData[year].PH += item.PH;
-        aggregatedData[year].Temp += item.Temp;
-        aggregatedData[year].Temp_Water += item.Temp_Water;
+        aggregatedData[year].stockDevice += item.stockDevice;
         aggregatedData[year].count += 1;
     });
 
     return Object.keys(aggregatedData).map((year) => ({
         datetime: year,
-        EC: aggregatedData[year].EC / aggregatedData[year].count,
-        Humidity: aggregatedData[year].Humidity / aggregatedData[year].count,
-        PH: aggregatedData[year].PH / aggregatedData[year].count,
-        Temp: aggregatedData[year].Temp / aggregatedData[year].count,
-        Temp_Water:
-            aggregatedData[year].Temp_Water / aggregatedData[year].count,
+        stockDevice: Math.round(
+            aggregatedData[year].stockDevice / aggregatedData[year].count
+        ),
     }));
 };
 
@@ -145,7 +133,7 @@ const getDeviceIds = (data) => {
     return [...new Set(deviceIds)];
 };
 
-export default function UserChart() {
+export default function AdminChart() {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -194,7 +182,8 @@ export default function UserChart() {
         fetchData();
     }, []);
 
-    console.log(startDate);
+    // console.log(data);
+    const result = countUniqueDevices(data);
     useEffect(() => {
         if (uniqueDeviceIds.length > 0) {
             setSelectedDeviceId(uniqueDeviceIds[0]);
@@ -208,13 +197,9 @@ export default function UserChart() {
         const filteredByDeviceIdData = data.filter(
             (item) => item.device_id === selectedDeviceId
         );
+        const result = countUniqueDevices(data);
 
-        const filteredData = filterDataByDate(
-            filteredByDeviceIdData,
-            startDate,
-            endDate
-        );
-
+        const filteredData = filterDataByDate(result, startDate, endDate);
         const processedData =
             viewMode === "month"
                 ? aggregateDataByMonth(filteredData)
@@ -223,7 +208,7 @@ export default function UserChart() {
                 : viewMode === "day"
                 ? aggregateDataByDay(filteredData)
                 : filteredData;
-
+        console.log(processedData);
         setChartData({
             labels: processedData.map((items) =>
                 dayjs(items.datetime).format(
@@ -236,34 +221,16 @@ export default function UserChart() {
             ),
             datasets: [
                 {
-                    label: "EC",
+                    label: "Stock Device",
                     backgroundColor: "rgba(75,192,192,0.4)",
                     borderColor: "rgba(75,192,192,1)",
-                    data: processedData.map((items) => items.EC),
+                    data: processedData.map((items) => items.stockDevice),
                 },
                 {
-                    label: "Humidity",
+                    label: "Online Device",
                     backgroundColor: "rgba(250,192,192,0.4)",
                     borderColor: "rgba(250,192,192,1)",
-                    data: processedData.map((items) => items.Humidity),
-                },
-                {
-                    label: "PH",
-                    backgroundColor: "rgba(250,234,192,0.4)",
-                    borderColor: "rgba(250,234,192,1)",
-                    data: processedData.map((items) => items.PH),
-                },
-                {
-                    label: "Air Temp",
-                    backgroundColor: "rgba(250,24,192,0.4)",
-                    borderColor: "rgba(250,24,192,1)",
-                    data: processedData.map((items) => items.Temp),
-                },
-                {
-                    label: "Water Temp",
-                    backgroundColor: "rgba(150,234,192,0.4)",
-                    borderColor: "rgba(150,234,192,1)",
-                    data: processedData.map((items) => items.Temp_Water),
+                    data: processedData.map((items) => items.onlineDevice),
                 },
             ],
         });
