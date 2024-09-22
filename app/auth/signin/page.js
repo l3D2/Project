@@ -112,10 +112,10 @@ export default function login() {
                 <GoogleIcon />
                 Google
               </button>
-              <button className="bg-gray-700 text-white w-full p-2 flex flex-row justify-center gap-2 items-center rounded-sm hover:bg-gray-800 duration-100 ease-in-out">
+              {/* <button className="bg-gray-700 text-white w-full p-2 flex flex-row justify-center gap-2 items-center rounded-sm hover:bg-gray-800 duration-100 ease-in-out">
                 <GitHubIcon />
                 Github
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

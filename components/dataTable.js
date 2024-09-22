@@ -13,7 +13,7 @@ export default function DataTable({ columns, rows }) {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
+                pageSize: 10,
               },
             },
           }}
@@ -45,7 +45,7 @@ export default function DataTable({ columns, rows }) {
               color: "white",
             },
           }}
-          pageSizeOptions={[5, 10]}
+          pageSizeOptions={[10, 15, 20]}
           disableRowSelectionOnClick
         />
       </div>

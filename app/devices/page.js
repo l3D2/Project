@@ -39,12 +39,15 @@ export default function Devices() {
 
   const fetchDevices = async () => {
     const id = session.user.id;
-    const res = await fetch(`https://api.bd2-cloud.net/api/device/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const json = await res.json();
     if (res.ok) {
       setData(json);
@@ -83,16 +86,6 @@ export default function Devices() {
 
   const handleOpenModal = () => {
     setOpen(!open);
-  };
-
-  const fetchData = async () => {
-    const res = await fetch("", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
   };
 
   const handleAddDevice = async () => {
@@ -164,7 +157,10 @@ export default function Devices() {
         <GridActionsCellItem
           icon={<InfoIcon />}
           label="Info"
-          onClick={() => console.log(`INfo device with id: ${id}`)}
+          onClick={() => {
+            console.log(`INfo device with id: ${id}`);
+            router.replace(`/device?id=${id}`);
+          }}
         />,
         <GridActionsCellItem
           icon={<EditIcon />}

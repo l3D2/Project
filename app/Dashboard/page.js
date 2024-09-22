@@ -18,34 +18,61 @@ import DevicesIcon from "@mui/icons-material/Devices";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
-  const [countDevices, setCountDevices] = useState(0);
   const router = useRouter();
   const { location } = useContext(UserLocationContext);
-  // Fetch device count function
-  const fetchCountDevices = async () => {
-    if (session && session.user) {
-      const id = session.user.id;
-      const res = await fetch(
-        `https://api.bd2-cloud.net/api/device/getCount/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const json = await res.json();
-      if (res.ok) {
-        setCountDevices(json);
-      } else {
-        console.error("Failed to fetch device count:");
+  const [device, setDevice] = useState([]);
+  const [countLands, setCountLands] = useState(0);
+
+  const fetchDevices = async () => {
+    const id = session.user.id;
+    const res = await fetch(
+      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
+    );
+    const json = await res.json();
+    if (res.ok) {
+      const result = Object.values(json).map((item, index) => {
+        return {
+          id: item.device_id,
+          name: item.device_name,
+          land: item.cat_id,
+          land_name: item.cat_name,
+          location: JSON.parse(item.location),
+          status: item.status,
+          blip: 1,
+        };
+      });
+      setDevice(result);
+    } else {
+      console.error("Failed to fetch device.");
+    }
+  };
+
+  const fetchLands = async () => {
+    const id = session.user.id;
+    const res = await fetch(`https://api.bd2-cloud.net/api/category/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json = await res.json();
+    if (res.ok) {
+      setCountLands(json.length);
+    } else {
+      console.error("Failed to fetch device.");
     }
   };
 
   useEffect(() => {
     if (session && session.user) {
-      fetchCountDevices();
+      fetchDevices();
+      fetchLands();
     }
   }, [session]);
 
@@ -66,31 +93,26 @@ export default function Dashboard() {
         {"Dashboard"}
         <div>
           <div className="grid grid-cols-4 gap-x-2">
-            <div className="grid grid-rows-2 grid-cols-2 col-span-2 gap-2">
-              <CardStat>
-                <DevicesIcon />
-                {"Device"}
-                {countDevices}
-              </CardStat>
-              <CardStat>
-                <DevicesIcon />
-                {"Lands"}
-                {"100"}
-              </CardStat>
-              <CardStat>
-                <DevicesIcon />
-                {"Device"}
-                {"100"}
-              </CardStat>
-              <CardStat>
-                <DevicesIcon />
-                {"Lands"}
-                {"100"}
-              </CardStat>
-            </div>
-            <div className="col-span-2 row-span-2">
-              <CardFilter />
-            </div>
+            <CardStat>
+              <DevicesIcon />
+              {"Device"}
+              {device.length}
+            </CardStat>
+            <CardStat>
+              <DevicesIcon />
+              {"Lands"}
+              {countLands}
+            </CardStat>
+            <CardStat>
+              <DevicesIcon />
+              {"Device"}
+              {"100"}
+            </CardStat>
+            <CardStat>
+              <DevicesIcon />
+              {"Lands"}
+              {"100"}
+            </CardStat>
           </div>
           <div className="my-2">
             <Divider className="bg-gray-600" style={{ height: "2px" }} />
@@ -100,7 +122,7 @@ export default function Dashboard() {
           </GoogleMapProvider>
         </div>
         <div className="grid w-full gap-2">
-          <CardDevice />
+          <CardDevice rdata={device} />
         </div>
       </Content>
     </>

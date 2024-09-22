@@ -72,14 +72,12 @@ export default function report() {
     }
   };
 
-  const submitReport = async (req, res) => {
-    const res = await fetch("",{
+  const submitReport = async () => {
+    const res = await fetch("", {
       method: "POST",
-      headers: {
-        
-      }
-    })
-  }
+      headers: {},
+    });
+  };
 
   return (
     <>
@@ -206,7 +204,7 @@ export default function report() {
                 },
               }}
             />
-            <button onClick={}>Send</button>
+            <button onClick={submitReport}>Send</button>
           </div>
         </div>
       </Content>

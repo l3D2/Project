@@ -17,10 +17,10 @@ export default function Navbar({ session }) {
   const [countDevices, setCountDevices] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar visibility
 
-  const fetchCountDevices = async () => {
+  const fetchDevices = async () => {
     const id = session.user.id;
     const res = await fetch(
-      `https://api.bd2-cloud.net/api/device/getCount/${id}`,
+      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
       {
         method: "GET",
         headers: {
@@ -30,14 +30,14 @@ export default function Navbar({ session }) {
     );
     const json = await res.json();
     if (res.ok) {
-      setCountDevices(json);
+      setCountDevices(json.length);
     } else {
-      console.error("Failed to fetch device count:");
+      console.error("Failed to fetch device.");
     }
   };
 
   useEffect(() => {
-    fetchCountDevices();
+    fetchDevices();
   }, []);
 
   const handleSignOut = async () => {
