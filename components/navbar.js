@@ -17,10 +17,10 @@ export default function Navbar({ session }) {
   const [countDevices, setCountDevices] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar visibility
 
-  const fetchDevices = async () => {
+  const fetchCountDevices = async () => {
     const id = session.user.id;
     const res = await fetch(
-      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
+      `https://api.bd2-cloud.net/api/device/getCount/${id}`,
       {
         method: "GET",
         headers: {
@@ -30,14 +30,14 @@ export default function Navbar({ session }) {
     );
     const json = await res.json();
     if (res.ok) {
-      setCountDevices(json.length);
+      setCountDevices(json);
     } else {
-      console.error("Failed to fetch device.");
+      console.error("Failed to fetch device count:");
     }
   };
 
   useEffect(() => {
-    fetchDevices();
+    fetchCountDevices();
   }, []);
 
   const handleSignOut = async () => {
@@ -59,17 +59,17 @@ export default function Navbar({ session }) {
         className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
       >
         <span className="sr-only">Open sidebar</span>
-        <MenuIcon className="text-white" />
+        <MenuIcon className="text-gray-900" />
       </button>
 
       <aside
         id="separator-sidebar"
-        className={` fixed top-0 left-0 z-40 w-64 h-full transition-transform lg:translate-x-0 max-xl:w-60 ${
+        className={`fixed top-0 left-0 z-40 w-64 h-full transition-transform lg:translate-x-0 max-xl:w-60 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`} // Apply class based on state
         aria-label="Sidebar"
       >
-        <div className="relative h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <div className="relative h-full px-3 py-4 overflow-y-auto bg-white dark:bg-gray-800">
           <div className="flex items-center">
             <div>
               <img

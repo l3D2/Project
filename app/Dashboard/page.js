@@ -67,14 +67,12 @@ export default function Dashboard() {
     } else {
       console.error("Failed to fetch device.");
     }
-  };
 
   useEffect(() => {
     if (session && session.user) {
       fetchDevices();
       fetchLands();
     }
-  }, [session]);
 
   // Check status session
   if (status === "loading") {
