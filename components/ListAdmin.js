@@ -23,12 +23,30 @@ const Demo = styled("div")(({ theme }) => ({
 }));
 
 export default function ListAdmin() {
-    const [items, setItems] = React.useState([]);
+    const [items, setItems] = React.useState([
+        {
+            name: "John Doe",
+            lastAccessed: "21/09/2024, 14:30:00",
+            online: true,
+        },
+    ]);
     const [open, setOpen] = React.useState(false);
     const [newItemName, setNewItemName] = React.useState("");
+    const [deleteIndex, setDeleteIndex] = React.useState(null);
+    const [confirmOpen, setConfirmOpen] = React.useState(false);
 
     const handleDelete = (index) => {
-        setItems((prevItems) => prevItems.filter((_, i) => i !== index));
+        setDeleteIndex(index);
+        setConfirmOpen(true);
+    };
+
+    const handleConfirmClose = () => {
+        setConfirmOpen(false);
+    };
+
+    const handleConfirmDelete = () => {
+        setItems((prevItems) => prevItems.filter((_, i) => i !== deleteIndex));
+        setConfirmOpen(false);
     };
 
     const handleAdd = () => {
@@ -40,7 +58,20 @@ export default function ListAdmin() {
     };
 
     const handleSave = () => {
-        setItems((prevItems) => [...prevItems, newItemName]);
+        const newItem = {
+            name: newItemName,
+            lastAccessed: new Date().toLocaleString("en-GB", {
+                hour12: false,
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+            }),
+            online: Math.random() < 0.5, // Randomly set online status for demonstration
+        };
+        setItems((prevItems) => [...prevItems, newItem]);
         setNewItemName("");
         setOpen(false);
     };
@@ -67,7 +98,7 @@ export default function ListAdmin() {
                     </Box>
 
                     <List>
-                        {items.map((value, index) => (
+                        {items.map((item, index) => (
                             <ListItem
                                 key={index}
                                 secondaryAction={
@@ -81,12 +112,20 @@ export default function ListAdmin() {
                                 }
                             >
                                 <ListItemAvatar>
-                                    <Avatar className="bg-gray-600 text-white">
+                                    <Avatar
+                                        className="text-white"
+                                        style={{
+                                            backgroundColor: item.online
+                                                ? "green"
+                                                : "gray",
+                                        }}
+                                    >
                                         <SupervisorAccountIcon />
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={value}
+                                    primary={item.name}
+                                    secondary={`Last accessed: ${item.lastAccessed}`}
                                     primaryTypographyProps={{ color: "black" }}
                                 />
                             </ListItem>
@@ -96,12 +135,12 @@ export default function ListAdmin() {
             </Grid>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add New Item</DialogTitle>
+                <DialogTitle>Add New Administrator</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="Item Name"
+                        label="Email Address"
                         fullWidth
                         value={newItemName}
                         onChange={(e) => setNewItemName(e.target.value)}
@@ -110,6 +149,17 @@ export default function ListAdmin() {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave}>Save</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={confirmOpen} onClose={handleConfirmClose}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to delete this administrator?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleConfirmClose}>Cancel</Button>
+                    <Button onClick={handleConfirmDelete}>Delete</Button>
                 </DialogActions>
             </Dialog>
         </Box>

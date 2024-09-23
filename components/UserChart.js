@@ -30,16 +30,21 @@ Chart.register(
 );
 
 const filterDataByDate = (data, startDate, endDate) => {
-    const start = dayjs(startDate);
-    const end = dayjs(endDate);
+    const start = dayjs(startDate).startOf("day");
+    const end = dayjs(endDate).startOf("day");
+    console.log(start);
     return data.filter((item) => {
-        const date = dayjs(item.datetime);
-        return date.isAfter(start) && date.isBefore(end);
+        const date = dayjs(item.datetime).startOf("day");
+        return (
+            date.isSame(start) ||
+            date.isSame(end) ||
+            (date.isAfter(start) && date.isBefore(end))
+        );
     });
 };
 
 const aggregateDataByDay = (data) => {
-    console.log(data);
+    // console.log(data);
     const aggregatedData = {};
 
     data.forEach((item) => {
@@ -194,7 +199,7 @@ export default function UserChart() {
         fetchData();
     }, []);
 
-    console.log(startDate);
+    // console.log(data);
     useEffect(() => {
         if (uniqueDeviceIds.length > 0) {
             setSelectedDeviceId(uniqueDeviceIds[0]);
@@ -209,11 +214,13 @@ export default function UserChart() {
             (item) => item.device_id === selectedDeviceId
         );
 
+        console.log(filteredByDeviceIdData);
         const filteredData = filterDataByDate(
             filteredByDeviceIdData,
             startDate,
             endDate
         );
+        console.log(filteredData);
 
         const processedData =
             viewMode === "month"

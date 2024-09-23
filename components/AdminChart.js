@@ -182,7 +182,7 @@ export default function AdminChart() {
         fetchData();
     }, []);
 
-    // console.log(data);
+    console.log(data);
     const result = countUniqueDevices(data);
     useEffect(() => {
         if (uniqueDeviceIds.length > 0) {
@@ -227,7 +227,7 @@ export default function AdminChart() {
                     data: processedData.map((items) => items.stockDevice),
                 },
                 {
-                    label: "Online Device",
+                    label: "Report",
                     backgroundColor: "rgba(250,192,192,0.4)",
                     borderColor: "rgba(250,192,192,1)",
                     data: processedData.map((items) => items.onlineDevice),
