@@ -19,7 +19,7 @@ export default function report() {
     topic: null,
     details: null,
   });
-  const [device, setDevice] = useState([]);
+  const [device, setDevice] = useState(null);
   const router = useRouter();
 
   const options_topic = [
@@ -51,12 +51,15 @@ export default function report() {
 
   const fetchDevice = async () => {
     const id = session.user.id;
-    const res = await fetch(`https://api.bd2-cloud.net/api/device/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const json = await res.json();
     console.log(json);
     if (res.ok) {
@@ -73,10 +76,23 @@ export default function report() {
   };
 
   const submitReport = async () => {
-    const res = await fetch("", {
+    const res = await fetch("https://api.bd2-cloud.net/api/report", {
       method: "POST",
-      headers: {},
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: session.user.id,
+        device_id: value.id,
+        report_topic: value.topic.label,
+        report_details: value.details,
+      }),
     });
+    if (res.ok) {
+      console.log("success");
+    } else {
+      console.log("Failed to submit report");
+    }
   };
 
   return (
@@ -90,7 +106,7 @@ export default function report() {
               disablePortal
               id="combo-box-demo"
               name="id"
-              options={device}
+              options={device == null ? { id: 0, label: "No device" } : device}
               noOptionsText="No Device"
               onChange={(e, newValue) => {
                 setValue((prevState) => ({
@@ -174,14 +190,13 @@ export default function report() {
               label="Details"
               multiline
               rows={4}
-              defaultValue=""
-              onChange={(e, newValue) => {
+              onChange={(e) => {
                 setValue((prevState) => ({
                   ...prevState,
-                  ["report"]: newValue,
+                  ["details"]: e.target.value,
                 }));
               }}
-              value={value.report}
+              value={value.details}
               sx={{
                 width: 300,
                 "& .MuiInputBase-root": {

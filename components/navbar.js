@@ -16,9 +16,22 @@ import { signOut } from "next-auth/react";
 export default function Navbar({ session }) {
   const [countDevices, setCountDevices] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar visibility
+  const [retryCount, setRetryCount] = useState(0);
+
+  const handleImageError = (e) => {
+    if (retryCount < 3) {
+      // Retry up to 3 times
+      setRetryCount(retryCount + 1);
+      setTimeout(() => {
+        e.target.src = session?.user?.image;
+      }, 2000 * retryCount); // Exponential backoff
+    } else {
+      e.target.src = ""; // Use fallback after retries
+    }
+  };
 
   const fetchCountDevices = async () => {
-    const id = session.user.id;
+    const id = session?.user?.id;
     const res = await fetch(
       `https://api.bd2-cloud.net/api/device/getCount/${id}`,
       {
@@ -37,8 +50,8 @@ export default function Navbar({ session }) {
   };
 
   useEffect(() => {
-    fetchCountDevices();
-  }, []);
+    if (session) fetchCountDevices();
+  }, [session]);
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
@@ -74,10 +87,11 @@ export default function Navbar({ session }) {
             <div>
               <img
                 src={session?.user?.image}
-                alt=""
+                alt="Profile Image"
                 width={75}
                 height={75}
                 style={{ borderRadius: "5%" }}
+                onError={handleImageError}
               />
             </div>
             <div className="ml-3">

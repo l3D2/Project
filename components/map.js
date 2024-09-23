@@ -33,7 +33,6 @@ export default function GoogleMapView(location) {
     );
   }
 
-  console.log("Markers", markers);
   const updateMarkersData = () => {
     markers.map((item, index) => {
       fetchLastestData(item.id);
@@ -51,7 +50,7 @@ export default function GoogleMapView(location) {
       }
     );
     const json = await res.json();
-    console.log("Lastest data", json);
+    //console.log("Lastest data", json);
 
     // Assuming you want to store only the latest data as an object, not an array
     if (json.length > 0) {
@@ -118,14 +117,44 @@ export default function GoogleMapView(location) {
                     <div className="text-black flex flex-col text-left">
                       <div>
                         Humidity:{" "}
-                        {data.humidity == null ? "N/A" : data.humidity}
+                        {data.humidity == null ||
+                        data.humidity == undefined ||
+                        data == undefined
+                          ? "N/A"
+                          : data.humidity}
                       </div>
-                      <div>Air: {data.temp == null ? "N/A" : data.temp}</div>
                       <div>
-                        Water: {data.tempW == null ? "N/A" : data.tempW}
+                        Air:{" "}
+                        {data.temp == null ||
+                        data.temp == undefined ||
+                        data == undefined
+                          ? "N/A"
+                          : data.temp}
                       </div>
-                      <div>EC: {data.ec == null ? "N/A" : data.ec}</div>
-                      <div>PH: {data.ph == null ? "N/A" : data.ph}</div>
+                      <div>
+                        Water:{" "}
+                        {data.tempW == null ||
+                        data.tempW == undefined ||
+                        data == undefined
+                          ? "N/A"
+                          : data.tempW}
+                      </div>
+                      <div>
+                        EC:{" "}
+                        {data.ec == null ||
+                        data.ec == undefined ||
+                        data == undefined
+                          ? "N/A"
+                          : data.ec}
+                      </div>
+                      <div>
+                        PH:{" "}
+                        {data.ph == null ||
+                        data.ph == undefined ||
+                        data == undefined
+                          ? "N/A"
+                          : data.ph}
+                      </div>
                     </div>
                   </div>
                 </div>

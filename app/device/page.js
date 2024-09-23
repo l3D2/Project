@@ -13,6 +13,7 @@ import GoogleMapView from "@/components/map";
 import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import DataTable from "@/components/dataTable";
 import { useMarkers } from "@/context/FilterMap";
+import { UserChart } from "@/components/UserChart.js";
 
 // MUI
 import Tabs from "@mui/material/Tabs";
@@ -139,6 +140,7 @@ export default function Device() {
           land_name: item.cat_name,
           location: JSON.parse(item.location),
           status: item.status,
+          battery: item.battery,
           blip: 1,
         };
       });
@@ -264,7 +266,7 @@ export default function Device() {
                 {deviceData.length > 0 &&
                 deviceData[0].battery != null &&
                 deviceData[0].battery != undefined
-                  ? deviceData[0].battery
+                  ? deviceData[0].battery + " %"
                   : "N/A"}
               </CardStat>
             </div>
@@ -296,7 +298,7 @@ export default function Device() {
               ) : value == 2 ? (
                 <DataTable columns={columns} rows={rData} />
               ) : value == 3 ? (
-                <p>Graph</p>
+                <UserChart deviceID={deviceID} session={session} />
               ) : value == 4 ? (
                 <div className="bg-white w-full p-3">
                   <div className="flex flex-row justify-start mb-8">

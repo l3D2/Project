@@ -112,7 +112,6 @@ export const authOptions = {
       session.user.id = token.id || token.user.account_id;
       session.user.role = token.role || token.user.role;
       session.user.image = token.image || token.user.imgurl;
-
       return session;
     },
 

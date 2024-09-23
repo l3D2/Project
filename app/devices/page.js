@@ -36,6 +36,8 @@ export default function Devices() {
     name: "",
     category: 0,
   });
+  const [macaddress, setMacAddress] = useState("");
+  const [category, setCategory] = useState([]);
 
   const fetchDevices = async () => {
     const id = session.user.id;
@@ -51,11 +53,26 @@ export default function Devices() {
     const json = await res.json();
     if (res.ok) {
       setData(json);
-      console.log("Fetched devices:", json);
       formatData(json);
-      console.log("Formatted data:", rows);
     } else {
       console.error("Failed to fetch device.");
+    }
+  };
+
+  const fetchCategory = async () => {
+    const id = session.user.id;
+    const res = await fetch(`https://api.bd2-cloud.net/api/category/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json = await res.json();
+    if (res.ok) {
+      console.log("Fetched categories:", json);
+      setCategory(json);
+    } else {
+      console.error("Failed to fetch categories.");
     }
   };
 
@@ -71,6 +88,7 @@ export default function Devices() {
   useEffect(() => {
     if (session && session.user) {
       fetchDevices();
+      fetchCategory();
     }
   }, [session]);
 
@@ -83,23 +101,92 @@ export default function Devices() {
     router.replace("/auth/signin");
     return null;
   }
-
   const handleOpenModal = () => {
     setOpen(!open);
   };
 
   const handleAddDevice = async () => {
-    console.log("Add new device");
+    if (macaddress == null || macaddress == "") {
+      console.log("Mac address not provided");
+    } else {
+      const id = session.user.id;
+      const res = await fetch(`https://api.bd2-cloud.net/api/device/register`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userid: id,
+          mac_address: macaddress,
+        }),
+      });
+      if (res.ok) {
+        console.log("Device registered successfully");
+        setOpen(false);
+        fetchDevices();
+      } else {
+        console.error("Failed to register device.");
+        setOpen(false);
+      }
+    }
   };
 
   const handleEdit = async (id) => {
     console.log(`Edit device with id: ${id}`);
+    data.map((item) => {
+      if (item.device_id === id) {
+        setEData({
+          id: item.device_id,
+          name: item.device_name,
+          category: item.cat_id,
+        });
+      }
+    });
+    console.log("Edit data", editData);
     setIsEditing(!isEditing);
   };
 
-  const handleDelete = (id) => {
+  const handleUpdate = async () => {
+    const id = session.user.id;
+    const res = await fetch(`https://api.bd2-cloud.net/api/device/updateData`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        deviceid: editData.id,
+        devicename: editData.name,
+        catid: editData.category,
+      }),
+    });
+    if (res.ok) {
+      console.log("Device updated successfully");
+      fetchDevices();
+      setIsEditing(false);
+    } else {
+      console.error("Failed to update device.");
+      setIsEditing(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
     console.log(`Delete device with id: ${id}`);
-    // Implement your delete logic here
+    const uid = session.user.id;
+    const res = await fetch(`https://api.bd2-cloud.net/api/device/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        deviceid: id,
+      }),
+    });
+    if (res.ok) {
+      console.log("Device deleted successfully");
+      fetchDevices();
+    } else {
+      console.error("Failed to delete device.");
+    }
   };
 
   const handleScanSuccess = (decodedText, decodedResult) => {
@@ -151,7 +238,7 @@ export default function Devices() {
       headerName: "Action",
       headerClassName: "super-app-theme--header",
       type: "actions",
-      flex: 1,
+      flex: 0.8,
       resizable: false,
       getActions: ({ id }) => [
         <GridActionsCellItem
@@ -215,6 +302,7 @@ export default function Devices() {
                 <input
                   className="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-white placeholder-shown:border-t-white border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-400"
                   placeholder=" "
+                  onChange={(e) => setMacAddress(e.target.value)}
                 />
                 <label className="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-500 peer-focus:text-gray-200 before:border-blue-gray-200 peer-focus:before:!border-gray-400 after:border-blue-gray-200 peer-focus:after:!border-gray-400">
                   MAC-ADDRESS
@@ -241,6 +329,7 @@ export default function Devices() {
             <button
               type="button"
               className=" bg-gray-500 hover:bg-slate-400 py-2 px-4 rounded-md"
+              onClick={handleAddDevice}
             >
               Add
             </button>
@@ -262,9 +351,12 @@ export default function Devices() {
                 <input
                   className="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-white placeholder-shown:border-t-white border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-400"
                   placeholder=" "
+                  onChange={(e) =>
+                    setEData({ ...editData, name: e.target.value })
+                  }
                 />
                 <label className="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-500 peer-focus:text-gray-200 before:border-blue-gray-200 peer-focus:before:!border-gray-400 after:border-blue-gray-200 peer-focus:after:!border-gray-400">
-                  Device Name
+                  {editData.name}
                 </label>
               </div>
               <div className="flex flex-row justify-center my-3">
@@ -312,12 +404,14 @@ export default function Devices() {
                       },
                     }}
                   >
-                    <MenuItem value="">
+                    <MenuItem value="null">
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={21}>Twenty one</MenuItem>
-                    <MenuItem value={22}>Twenty one and a half</MenuItem>
+                    {category.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -327,6 +421,7 @@ export default function Devices() {
             <button
               type="button"
               className=" bg-gray-500 hover:bg-slate-400 py-2 px-4 rounded-md"
+              onClick={handleUpdate}
             >
               Save
             </button>
