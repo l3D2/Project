@@ -1,15 +1,14 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import FilterChart2 from "@/components/FilterChart2";
-import ChartJS2 from "@/components/ChartJS2";
-import UserChart from "@/components/UserChart";
-import { Chart } from "chart.js";
-function FilterTest() {
+import React from "react";
+
+import CardProblemReport from "@/components/ProblemReport/CardProblemReport";
+import QrCodeGenerator from "@/components/QrCodeGenarate";
+function page() {
     return (
         <div>
-            <UserChart />
+            <CardProblemReport />
+            <QrCodeGenerator />
         </div>
     );
 }
 
-export default FilterTest;
+export default page;

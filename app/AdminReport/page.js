@@ -1,4 +1,5 @@
 "use client";
+
 import Navbar from "@/components/navbar";
 import Content from "@/components/content";
 import CardStat from "@/components/cardStatus";
@@ -10,6 +11,7 @@ import { UserLocationContext } from "@/context/context";
 import CardAdmin from "@/components/CardAdmin";
 import AdminChart from "@/components/AdminChart";
 import dayjs from "dayjs";
+import CardProblemReport from "@/components/ProblemReport/CardProblemReport";
 
 //Icon
 import DevicesIcon from "@mui/icons-material/Devices";
@@ -17,33 +19,13 @@ import CloudIcon from "@mui/icons-material/Cloud";
 import ApiIcon from "@mui/icons-material/Api";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
-import { Button, Modal, Box } from "@mui/material";
-
-import QrCodeGenerator from "@/components/QrCodeGenarate";
 // Date
-
-const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-};
-
 export default function AdminDashboard() {
     const { data: session, status } = useSession();
     const [countDevices, setCountDevices] = useState(0);
     const router = useRouter();
     const { location } = useContext(UserLocationContext);
     const [lastUpdateTime, setLastUpdateTime] = useState(dayjs());
-
-    const [qrCodeGenerateOpen, setQrCodeGenerateOpen] = useState(false);
-    const handleQrCodeGenerateOpen = () => setQrCodeGenerateOpen(true);
-    const handleQrCodeGenerateClose = () => setQrCodeGenerateOpen(false);
 
     // Fetch device count function
     const fetchCountDevices = async () => {
@@ -120,7 +102,7 @@ export default function AdminDashboard() {
                             style={{ height: "2px" }}
                         />
                     </div>
-                    <AdminChart />
+                    <CardProblemReport />
                 </div>
                 <div className="grid w-full gap-2">
                     {/* <CardDevice /> */}
@@ -131,35 +113,6 @@ export default function AdminDashboard() {
                     <p className="text-center pb-2">
                         Last Update {lastUpdateTime.format("HH:mm")}
                     </p>
-                    <Button
-                        variant="contained"
-                        onClick={handleQrCodeGenerateOpen}
-                    >
-                        Generate QR Code
-                    </Button>
-                    <Modal
-                        open={qrCodeGenerateOpen}
-                        onClose={handleQrCodeGenerateClose}
-                        aria-labelledby="modal-title"
-                        aria-describedby="modal-description"
-                    >
-                        <Box
-                            sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                width: 400,
-                                bgcolor: "background.paper",
-                                border: "2px solid #000",
-                                boxShadow: 24,
-                                p: 4,
-                            }}
-                        >
-                            <QrCodeGenerator />
-                            {/* Add your QR code generation logic here */}
-                        </Box>
-                    </Modal>
                 </div>
             </Content>
         </>
