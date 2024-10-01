@@ -43,6 +43,8 @@ export default function report() {
   if (!session) {
     router.replace("/auth/signin");
     return null;
+  } else if (session?.user?.role !== "U") {
+    router.replace("/admin/dashboard");
   }
 
   const handleSaveReport = (e) => {

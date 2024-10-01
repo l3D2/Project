@@ -13,7 +13,7 @@ import GoogleMapView from "@/components/map";
 import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import DataTable from "@/components/dataTable";
 import { useMarkers } from "@/context/FilterMap";
-import { UserChart } from "@/components/UserChart.js";
+import UserChart from "@/components/UserChart.js";
 
 // MUI
 import Tabs from "@mui/material/Tabs";
@@ -130,7 +130,7 @@ export default function Device() {
       }
     );
     const json = await res.json();
-    console.log("Device", json);
+    //console.log("Device", json);
     if (res.ok) {
       const result = Object.values(json).map((item, index) => {
         return {
@@ -220,6 +220,8 @@ export default function Device() {
   if (!session) {
     router.replace("/auth/signin");
     return null;
+  } else if (session?.user?.role !== "U") {
+    router.replace("/admin/dashboard");
   }
 
   if (!deviceID) return <div>Oops have something went wrong.</div>;
@@ -298,7 +300,7 @@ export default function Device() {
               ) : value == 2 ? (
                 <DataTable columns={columns} rows={rData} />
               ) : value == 3 ? (
-                <UserChart deviceID={deviceID} session={session} />
+                <UserChart deviceID={deviceID} rdata={rData} />
               ) : value == 4 ? (
                 <div className="bg-white w-full p-3">
                   <div className="flex flex-row justify-start mb-8">

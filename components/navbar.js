@@ -112,64 +112,105 @@ export default function Navbar({ session }) {
               </span>
             </div>
           </div>
-          <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            <h6 className="text-center text-gray-800 dark:text-gray-500">
-              Menu
-            </h6>
-            <li>
-              <a
-                href="/dashboard"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <DashboardIcon />
-                <span className="ms-3">Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/devices"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <DevicesIcon />
-                <span className="flex-1 ms-3 whitespace-nowrap">Devices</span>
-                <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                  {countDevices}
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/report"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <ReportIcon />
-                <span className="flex-1 ms-3 whitespace-nowrap">Report</span>
-              </a>
-            </li>
-          </ul>
-          <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            <h6 className="text-center text-gray-800 dark:text-gray-500">
-              Setting
-            </h6>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
-              >
-                <NotificationsIcon />
-                <span className="ms-3">Notification</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
-              >
-                <ContactPageIcon />
-                <span className="ms-3">Contact us</span>
-              </a>
-            </li>
-          </ul>
+          {session?.user?.role == "U" ? (
+            <>
+              <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                <h6 className="text-center text-gray-800 dark:text-gray-500">
+                  Menu
+                </h6>
+                <li>
+                  <a
+                    href="/dashboard"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <DashboardIcon />
+                    <span className="ms-3">Dashboard</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/devices"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <DevicesIcon />
+                    <span className="flex-1 ms-3 whitespace-nowrap">
+                      Devices
+                    </span>
+                    <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                      {countDevices}
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/report"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <ReportIcon />
+                    <span className="flex-1 ms-3 whitespace-nowrap">
+                      Report
+                    </span>
+                  </a>
+                </li>
+              </ul>
+              <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                <h6 className="text-center text-gray-800 dark:text-gray-500">
+                  Setting
+                </h6>
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
+                  >
+                    <NotificationsIcon />
+                    <span className="ms-3">Notification</span>
+                  </a>
+                </li>
+              </ul>
+            </>
+          ) : (
+            <>
+              <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                <h6 className="text-center text-gray-800 dark:text-gray-500">
+                  Menu
+                </h6>
+                <li>
+                  <a
+                    href="/admin/dashboard"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <DashboardIcon />
+                    <span className="ms-3">Dashboard</span>
+                  </a>
+                </li>
+                {/* <li>
+                  <a
+                    href="/devices"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <DevicesIcon />
+                    <span className="flex-1 ms-3 whitespace-nowrap">
+                      Devices
+                    </span>
+                    <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                      {countDevices}
+                    </span>
+                  </a>
+                </li> */}
+                <li>
+                  <a
+                    href="/admin/report"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <ReportIcon />
+                    <span className="flex-1 ms-3 whitespace-nowrap">
+                      Report
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </>
+          )}
           <div className="flex justify-center">
             <button
               type="submit"

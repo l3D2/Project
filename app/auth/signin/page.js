@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 

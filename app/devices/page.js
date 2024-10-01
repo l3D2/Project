@@ -100,7 +100,10 @@ export default function Devices() {
   if (!session) {
     router.replace("/auth/signin");
     return null;
+  } else if (session?.user?.role !== "U") {
+    router.replace("/admin/dashboard");
   }
+
   const handleOpenModal = () => {
     setOpen(!open);
   };

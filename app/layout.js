@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import AuthProvider from "./providers";
 import { UserLocationProvider } from "@/context/context";
 import { MarkerProvider } from "@/context/FilterMap";
+import AutoLogout from "@/components/autoLogout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
         </head>
         <body className={inter.className}>
           <div className="relative">
+            <AutoLogout />
             <AuthProvider>
               <MarkerProvider>{children}</MarkerProvider>
             </AuthProvider>

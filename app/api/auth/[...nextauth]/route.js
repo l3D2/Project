@@ -41,7 +41,7 @@ export const authOptions = {
         if (response.ok) {
           const userData = await response.json();
           const user = userData[0];
-          console.log(user.password);
+          //console.log(user.password);
           if (!user.password) {
             console.error("User has no password field.");
             return null;
@@ -55,9 +55,22 @@ export const authOptions = {
           if (!isPasswordCorrect) {
             console.error("Password does not match.");
             return null;
+          } else {
+            const res = await fetch(
+              "https://api.bd2-cloud.net/api/user/updateStatus",
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: credentials.email }),
+              }
+            );
+            if (!res.ok) {
+              console.error("Failed to update user status.");
+              return null;
+            } else return user;
           }
-
-          return user;
         } else {
           console.error("Failed to fetch user data.");
           return null;
@@ -67,6 +80,10 @@ export const authOptions = {
   ],
   session: {
     strategy: "jwt",
+    maxAge: 3600,
+  },
+  jwt: {
+    maxAge: 3600,
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
