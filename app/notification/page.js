@@ -48,75 +48,90 @@ export default function Notification() {
 
   const fetchNoti = async () => {
     const id = session.user.id;
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/notification/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/notification/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      if (res.ok) {
+        setValueEC({
+          min: json[0].ec_min,
+          max: json[0].ec_max,
+          state: json[0].notify_ec,
+        });
+        setValuePH({
+          min: json[0].ph_min,
+          max: json[0].ph_max,
+          state: json[0].notify_ph,
+        });
+        setValueTemp({
+          min: json[0].temp_min,
+          max: json[0].temp_max,
+          state: json[0].notify_temp,
+        });
+        setValueTempW({
+          min: json[0].tempw_min,
+          max: json[0].tempw_max,
+          state: json[0].notify_tempw,
+        });
+        setValueH({
+          min: json[0].humi_min,
+          max: json[0].humi_max,
+          state: json[0].notify_humi,
+        });
+      } else {
+        console.log("Failed to fetch setting notification");
+        throw new Error("Failed to fetch setting notification");
       }
-    );
-    const json = await res.json();
-    if (res.ok) {
-      setValueEC({
-        min: json[0].ec_min,
-        max: json[0].ec_max,
-        state: json[0].notify_ec,
-      });
-      setValuePH({
-        min: json[0].ph_min,
-        max: json[0].ph_max,
-        state: json[0].notify_ph,
-      });
-      setValueTemp({
-        min: json[0].temp_min,
-        max: json[0].temp_max,
-        state: json[0].notify_temp,
-      });
-      setValueTempW({
-        min: json[0].tempw_min,
-        max: json[0].tempw_max,
-        state: json[0].notify_tempw,
-      });
-      setValueH({
-        min: json[0].humi_min,
-        max: json[0].humi_max,
-        state: json[0].notify_humi,
-      });
-    } else {
-      console.log("Failed to submit report", valuePH);
+    } catch (err) {
+      console.log("Error fetching data");
     }
   };
 
   const handleUpdate = async () => {
     const id = session.user.id;
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/notification/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ec_min: valueEC.min,
-          ec_max: valueEC.max,
-          notify_ec: valueEC.state,
-          ph_min: valuePH.min,
-          ph_max: valuePH.max,
-          notify_ph: valuePH.state,
-          temp_min: valueTemp.min,
-          temp_max: valueTemp.max,
-          notify_temp: valueTemp.state,
-          tempw_min: valueTempW.min,
-          tempw_max: valueTempW.max,
-          notify_tempw: valueTempW.state,
-          humi_min: valueH.min,
-          humi_max: valueH.max,
-          notify_humi: valueH.state,
-        }),
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/notification/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ec_min: valueEC.min,
+            ec_max: valueEC.max,
+            notify_ec: valueEC.state,
+            ph_min: valuePH.min,
+            ph_max: valuePH.max,
+            notify_ph: valuePH.state,
+            temp_min: valueTemp.min,
+            temp_max: valueTemp.max,
+            notify_temp: valueTemp.state,
+            tempw_min: valueTempW.min,
+            tempw_max: valueTempW.max,
+            notify_tempw: valueTempW.state,
+            humi_min: valueH.min,
+            humi_max: valueH.max,
+            notify_humi: valueH.state,
+          }),
+        }
+      );
+      if (res.ok) {
+        console.log("Data updated successfully");
+      } else {
+        console.log("Failed to update data");
+        throw new Error("Failed to update data");
       }
-    );
+    } catch (err) {
+      console.log("Error updating data");
+    }
   };
 
   useEffect(() => {

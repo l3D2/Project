@@ -47,33 +47,34 @@ export default function report() {
     router.replace("/admin/dashboard");
   }
 
-  const handleSaveReport = (e) => {
-    console.log(e.target.value);
-  };
-
   const fetchDevice = async () => {
     const id = session.user.id;
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/device/get-device/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      console.log(json);
+      if (res.ok) {
+        console.log("Fetched devices:", json);
+        const result = Object.values(json).map((item, index) => ({
+          label: item.device_name,
+          uuid: item.device_id,
+        }));
+        setDevice(result);
+        console.log("Formatted data:", device);
+      } else {
+        console.error("Failed to fetch device.");
+        throw new Error("Failed to fetch device.");
       }
-    );
-    const json = await res.json();
-    console.log(json);
-    if (res.ok) {
-      console.log("Fetched devices:", json);
-      const result = Object.values(json).map((item, index) => ({
-        label: item.device_name,
-        uuid: item.device_id,
-      }));
-      setDevice(result);
-      console.log("Formatted data:", device);
-    } else {
-      console.error("Failed to fetch device.");
+    } catch (err) {
+      console.error("Error fetching device:");
     }
   };
 

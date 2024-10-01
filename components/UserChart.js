@@ -142,7 +142,7 @@ const aggregateDataByYear = (data) => {
   }));
 };
 
-export default function UserChart({ deviceID, rdata }) {
+export default function UserChart({ rdata }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -165,17 +165,13 @@ export default function UserChart({ deviceID, rdata }) {
       },
     ],
   });
-  //console.log("Data chart", rdata);
   // fetch data
   useEffect(() => {
     setData(rdata);
   }, []);
 
-  // console.log(data);
-
   useEffect(() => {
     const filteredData = filterDataByDate(data, startDate, endDate);
-    //console.log(filteredData);
 
     const processedData =
       viewMode === "month"

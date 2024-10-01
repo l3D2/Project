@@ -4,7 +4,6 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import DevicesIcon from "@mui/icons-material/Devices";
 import ReportIcon from "@mui/icons-material/Report";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import ContactPageIcon from "@mui/icons-material/ContactPage";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -32,19 +31,24 @@ export default function Navbar({ session }) {
 
   const fetchCountDevices = async () => {
     const id = session?.user?.id;
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/device/getCount/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/device/getCount/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      if (res.ok) {
+        setCountDevices(json);
+      } else {
+        console.error("Failed to fetch device count:");
+        throw new Error("Failed to fetch device count.");
       }
-    );
-    const json = await res.json();
-    if (res.ok) {
-      setCountDevices(json);
-    } else {
+    } catch (err) {
       console.error("Failed to fetch device count:");
     }
   };
@@ -54,6 +58,26 @@ export default function Navbar({ session }) {
   }, [session]);
 
   const handleSignOut = async () => {
+    try {
+      const res = await fetch(
+        "https://api.bd2-cloud.net/api/user/updateStatus",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: credentials.email, status: 1 }),
+        }
+      );
+      if (res.ok) {
+        console.log("User status updated successfully.");
+      } else {
+        console.error("Failed to update user status:");
+        throw new Error("Failed to update user status.");
+      }
+    } catch (error) {
+      console.error("Failed to update user status:", error);
+    }
     await signOut({ callbackUrl: "/" });
   };
 
@@ -183,20 +207,6 @@ export default function Navbar({ session }) {
                     <span className="ms-3">Dashboard</span>
                   </a>
                 </li>
-                {/* <li>
-                  <a
-                    href="/devices"
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  >
-                    <DevicesIcon />
-                    <span className="flex-1 ms-3 whitespace-nowrap">
-                      Devices
-                    </span>
-                    <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                      {countDevices}
-                    </span>
-                  </a>
-                </li> */}
                 <li>
                   <a
                     href="/admin/report"

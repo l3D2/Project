@@ -37,42 +37,57 @@ export default function Devices() {
     category: 0,
   });
   const [macaddress, setMacAddress] = useState("");
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState([
+    {
+      id: 0,
+      name: "No category",
+    },
+  ]);
 
   const fetchDevices = async () => {
     const id = session.user.id;
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/device/get-device/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      if (res.ok) {
+        setData(json);
+        formatData(json);
+      } else {
+        console.error("Failed to fetch device.");
+        throw new Error("Failed to fetch device.");
       }
-    );
-    const json = await res.json();
-    if (res.ok) {
-      setData(json);
-      formatData(json);
-    } else {
-      console.error("Failed to fetch device.");
+    } catch (err) {
+      console.error("Error: Failed to fetch device.");
     }
   };
 
   const fetchCategory = async () => {
     const id = session.user.id;
-    const res = await fetch(`https://api.bd2-cloud.net/api/category/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await res.json();
-    if (res.ok) {
-      console.log("Fetched categories:", json);
-      setCategory(json);
-    } else {
-      console.error("Failed to fetch categories.");
+    try {
+      const res = await fetch(`https://api.bd2-cloud.net/api/category/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await res.json();
+      if (res.ok) {
+        console.log("Fetched categories:", json);
+        setCategory(json);
+      } else {
+        console.error("Failed to fetch categories.");
+        throw new Error("Failed to fetch categories.");
+      }
+    } catch (err) {
+      console.error("Error: Failed to fetch categories.");
     }
   };
 
@@ -113,23 +128,31 @@ export default function Devices() {
       console.log("Mac address not provided");
     } else {
       const id = session.user.id;
-      const res = await fetch(`https://api.bd2-cloud.net/api/device/register`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userid: id,
-          mac_address: macaddress,
-        }),
-      });
-      if (res.ok) {
-        console.log("Device registered successfully");
-        setOpen(false);
-        fetchDevices();
-      } else {
-        console.error("Failed to register device.");
-        setOpen(false);
+      try {
+        const res = await fetch(
+          `https://api.bd2-cloud.net/api/device/register`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userid: id,
+              mac_address: macaddress,
+            }),
+          }
+        );
+        if (res.ok) {
+          console.log("Device registered successfully");
+          setOpen(false);
+          fetchDevices();
+        } else {
+          console.error("Failed to register device.");
+          setOpen(false);
+          throw new Error("Failed to register device.");
+        }
+      } catch (err) {
+        console.error("Error: Failed to register device.");
       }
     }
   };

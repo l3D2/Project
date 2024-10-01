@@ -40,35 +40,55 @@ export default function GoogleMapView(location) {
   };
 
   const fetchLastestData = async (id) => {
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/data/lastest/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const json = await res.json();
-    //console.log("Lastest data", json);
-
-    // Assuming you want to store only the latest data as an object, not an array
-    if (json.length > 0) {
-      const latestData = {
-        datetime: json[0].datetime,
-        ec: json[0].EC,
-        ph: json[0].PH,
-        temp: json[0].Temp,
-        humidity: json[0].Humidity,
-        tempW: json[0].Temp_Water,
-      };
-
-      // Update markers with the latest data as an object, not an array
-      setMarkers((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, data: latestData } : item
-        )
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/data/lastest/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
+      const json = await res.json();
+      //console.log("Lastest data", json);
+
+      // Assuming you want to store only the latest data as an object, not an array
+      if (json.length > 0) {
+        const latestData = {
+          datetime: json[0].datetime,
+          ec: json[0].EC,
+          ph: json[0].PH,
+          temp: json[0].Temp,
+          humidity: json[0].Humidity,
+          tempW: json[0].Temp_Water,
+        };
+
+        // Update markers with the latest data as an object, not an array
+        setMarkers((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, data: latestData } : item
+          )
+        );
+      } else {
+        const latestData = {
+          datetime: "N/A",
+          ec: 0,
+          ph: 0,
+          temp: 0,
+          humidity: 0,
+          tempW: 0,
+        };
+        // Update markers with the latest data as an object, not an array
+        setMarkers((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, data: latestData } : item
+          )
+        );
+        throw new Error("No data found");
+      }
+    } catch (err) {
+      console.error("Error fetching data");
     }
   };
 

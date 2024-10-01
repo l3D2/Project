@@ -63,7 +63,7 @@ export const authOptions = {
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email: credentials.email }),
+                body: JSON.stringify({ email: credentials.email, status: 1 }),
               }
             );
             if (!res.ok) {

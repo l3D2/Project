@@ -50,11 +50,6 @@ export default function AdminDashboard() {
                 {"100"}
               </CardStat>
               <CardStat className="col-span-1">
-                <CloudIcon />
-                {"Cloud"}
-                {"100"}
-              </CardStat>
-              <CardStat className="col-span-1">
                 <ApiIcon />
                 {"API"}
                 {"100"}

@@ -27,16 +27,82 @@ export default function AdminDashboard() {
   const router = useRouter();
   const { location } = useContext(UserLocationContext);
   const [lastUpdateTime, setLastUpdateTime] = useState(dayjs());
-
   const [qrCodeGenerateOpen, setQrCodeGenerateOpen] = useState(false);
   const handleQrCodeGenerateOpen = () => setQrCodeGenerateOpen(true);
   const handleQrCodeGenerateClose = () => setQrCodeGenerateOpen(false);
+  const [serviceStatus, setServiceStatus] = useState({
+    apiStatus: "Offline",
+    lineStatus: "Offline",
+    deviceTot: 0,
+    deviceOnline: 0,
+  });
 
+  const checkServiceStatus = async () => {
+    try {
+      const resApi = await fetch("https://api.bd2-cloud.net/", {
+        method: "GET",
+      });
+
+      if (resApi.ok) {
+        setServiceStatus((prev) => ({ ...prev, apiStatus: "Online" }));
+      } else {
+        setServiceStatus((prev) => ({ ...prev, apiStatus: "Offline" }));
+        throw new Error("API Service is Offline");
+      }
+    } catch (error) {
+      //router.replace("/error");
+    }
+    try {
+      const resLine = await fetch("https://api-line.bd2-cloud.net/", {
+        method: "GET",
+      });
+
+      if (resLine.ok) {
+        setServiceStatus((prev) => ({ ...prev, lineStatus: "Online" }));
+      } else {
+        setServiceStatus((prev) => ({ ...prev, lineStatus: "Offline" }));
+        throw new Error("Line Service is Offline");
+      }
+    } catch (error) {
+      //router.replace("/error");
+    }
+  };
+
+  const fetchDevice = async () => {
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/device/backend/device`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        console.log("D", data);
+        setServiceStatus((prev) => ({
+          ...prev,
+          deviceTot: data[0].total,
+          deviceOnline: data[0].online,
+        }));
+      } else {
+        throw new Error("Error fetch device");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(serviceStatus);
   useEffect(() => {
     if (session && session.user) {
+      checkServiceStatus();
+      fetchDevice();
     }
     const interval = setInterval(() => {
-      fetchCountDevices();
+      checkServiceStatus();
+      fetchDevice();
       setLastUpdateTime(dayjs());
     }, 60000);
     return () => clearInterval(interval);
@@ -60,26 +126,21 @@ export default function AdminDashboard() {
         {"Dashboard"}
         <div className="bg-gray-200">
           <div className="grid grid-cols-4 gap-x-2">
-            <div className="grid grid-cols-4 gap-2 col-span-4">
+            <div className="grid grid-cols-3 gap-2 col-span-4">
               <CardStat className="col-span-1">
                 <DevicesIcon />
-                {"Stock Device"}
-                {"100"}
-              </CardStat>
-              <CardStat className="col-span-1">
-                <CloudIcon />
-                {"Cloud"}
-                {"100"}
+                {"Device"}
+                {serviceStatus.deviceOnline + " / " + serviceStatus.deviceTot}
               </CardStat>
               <CardStat className="col-span-1">
                 <ApiIcon />
                 {"API"}
-                {"100"}
+                {serviceStatus.apiStatus}
               </CardStat>
               <CardStat className="col-span-1">
                 <DevicesIcon />
                 {"LINE"}
-                {"100"}
+                {serviceStatus.lineStatus}
               </CardStat>
             </div>
           </div>
@@ -116,7 +177,7 @@ export default function AdminDashboard() {
                 p: 4,
               }}
             >
-              <QrCodeGenerator />
+              <QrCodeGenerator uid={session?.user?.id} />
               {/* Add your QR code generation logic here */}
             </Box>
           </Modal>

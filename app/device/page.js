@@ -40,14 +40,19 @@ export default function Device() {
   const [value, setValue] = useState(1);
   const { markers, setMarkers } = useMarkers();
   const [deviceID, setDeviceID] = useState(null);
-  const [deviceData, setDeviceData] = useState([]);
-
+  const [deviceData, setDeviceData] = useState([
+    {
+      id: "N/A",
+      name: "N/A",
+      land: "N/A",
+      land_name: "N/A",
+      location: "N/A",
+      status: "N/A",
+      battery: "N/A",
+      blip: 0,
+    },
+  ]);
   const [interval, setInterval] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   const [mData, setData] = useState({
     H: 0, //Humidity
     A: 0, //Air
@@ -57,7 +62,21 @@ export default function Device() {
     date: "N/A",
   });
 
-  const [rData, setRData] = useState([]);
+  const [rData, setRData] = useState([
+    {
+      id: 0,
+      datetime: "N/A",
+      h: 0, //Humidity
+      ta: 0, //Air
+      ec: 0, //Electrical Conductivity
+      ph: 0, //PH
+      t: 0, //Water Heating
+    },
+  ]);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const columns = [
     {
@@ -120,83 +139,102 @@ export default function Device() {
   const options_interval = [10, 30, 60, 120];
 
   const fetchDevice = async () => {
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/device/${deviceID}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/device/${deviceID}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      if (res.ok) {
+        const result = Object.values(json).map((item, index) => {
+          return {
+            id: item.device_id,
+            name: item.device_name,
+            land: item.cat_id,
+            land_name: item.cat_name,
+            location: JSON.parse(item.location),
+            status: item.status,
+            battery: item.battery,
+            blip: 1,
+          };
+        });
+        setDeviceData(result);
+        setMarkers(result);
+      } else {
+        console.error("Failed to fetch device.");
+        throw new Error("Failed to fetch device");
       }
-    );
-    const json = await res.json();
-    //console.log("Device", json);
-    if (res.ok) {
-      const result = Object.values(json).map((item, index) => {
-        return {
-          id: item.device_id,
-          name: item.device_name,
-          land: item.cat_id,
-          land_name: item.cat_name,
-          location: JSON.parse(item.location),
-          status: item.status,
-          battery: item.battery,
-          blip: 1,
-        };
-      });
-      setDeviceData(result);
-      setMarkers(result);
-    } else {
-      console.error("Failed to fetch device.");
+    } catch (err) {
+      console.log(err);
     }
   };
-  console.log("Device Data", deviceData);
+
   const fetchData = async () => {
-    const res = await fetch(`https://api.bd2-cloud.net/api/data/${deviceID}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await res.json();
-    if (res.ok) {
-      const result = Object.values(json).map((item, index) => ({
-        id: index,
-        datetime: item.datetime,
-        h: item.Humidity, //Humidity
-        ta: item.Temp, //Air
-        ec: item.EC, //Electrical Conductivity
-        ph: item.PH, //PH
-        t: item.Temp_Water, //Water Heating
-      }));
-      setRData(result);
-    } else {
-      console.error("Failed to fetch device.");
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/data/${deviceID}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      if (res.ok) {
+        const result = Object.values(json).map((item, index) => ({
+          id: index,
+          datetime: item.datetime,
+          h: item.Humidity, //Humidity
+          ta: item.Temp, //Air
+          ec: item.EC, //Electrical Conductivity
+          ph: item.PH, //PH
+          t: item.Temp_Water, //Water Heating
+        }));
+        setRData(result);
+      } else {
+        console.error("Failed to fetch device.");
+        throw new Error("Failed to fetch device");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
   const fetchLastestData = async (id) => {
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/data/lastest/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const json = await res.json();
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/data/lastest/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
 
-    if (json.length > 0) {
-      const date = new Date(json[0].datetime).toLocaleString();
-      setData({
-        H: json[0].Humidity,
-        A: json[0].Temp,
-        EC: json[0].EC,
-        PH: json[0].PH,
-        W: json[0].Temp_Water,
-        date: date,
-      });
+      if (json.length > 0) {
+        const date = new Date(json[0].datetime).toLocaleString();
+        setData({
+          H: json[0].Humidity,
+          A: json[0].Temp,
+          EC: json[0].EC,
+          PH: json[0].PH,
+          W: json[0].Temp_Water,
+          date: date,
+        });
+      } else {
+        console.log("Fetch data failed");
+        throw new Error("Fetch data failed");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 

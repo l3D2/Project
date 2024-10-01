@@ -7,8 +7,27 @@ const AutoLogout = () => {
       const session = await getSession();
 
       if (!session) {
-        // If the session is not found (expired), log the user out
-        signOut();
+        try {
+          const res = await fetch(
+            "https://api.bd2-cloud.net/api/user/updateStatus",
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email: credentials.email, status: 1 }),
+            }
+          );
+          if (res.ok) {
+            console.log("User status updated");
+          } else {
+            console.error("Failed to update user status", res);
+            throw new Error("Failed to update user status");
+          }
+        } catch (err) {
+          console.error("Failed to sign out", err);
+        }
+        await signOut();
       }
     };
 

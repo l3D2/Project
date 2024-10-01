@@ -20,54 +20,75 @@ export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { location } = useContext(UserLocationContext);
-  const [device, setDevice] = useState([]);
+  const [device, setDevice] = useState([
+    {
+      id: "N/A",
+      name: "N/A",
+      land: "N/A",
+      land_name: "N/A",
+      location: "N/A",
+      status: "N/A",
+      blip: 0,
+    },
+  ]);
   const [countLands, setCountLands] = useState(0);
 
   const fetchDevices = async () => {
     const id = session.user.id;
-    const res = await fetch(
-      `https://api.bd2-cloud.net/api/device/get-device/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const res = await fetch(
+        `https://api.bd2-cloud.net/api/device/get-device/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const json = await res.json();
+      if (res.ok) {
+        const result = Object.values(json).map((item, index) => {
+          return {
+            id: item.device_id,
+            name: item.device_name,
+            land: item.cat_id,
+            land_name: item.cat_name,
+            location: JSON.parse(item.location),
+            status: item.status,
+            blip: 1,
+          };
+        });
+        setDevice(result);
+      } else {
+        console.error("Failed to fetch device.");
+        throw new Error("Failed to fetch device.");
       }
-    );
-    const json = await res.json();
-    if (res.ok) {
-      const result = Object.values(json).map((item, index) => {
-        return {
-          id: item.device_id,
-          name: item.device_name,
-          land: item.cat_id,
-          land_name: item.cat_name,
-          location: JSON.parse(item.location),
-          status: item.status,
-          blip: 1,
-        };
-      });
-      setDevice(result);
-    } else {
-      console.error("Failed to fetch device.");
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const fetchLands = async () => {
     const id = session.user.id;
-    const res = await fetch(`https://api.bd2-cloud.net/api/category/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await res.json();
-    if (res.ok) {
-      setCountLands(json.length);
-    } else {
-      console.error("Failed to fetch device.");
+    try {
+      const res = await fetch(`https://api.bd2-cloud.net/api/category/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setCountLands(json.length);
+      } else {
+        console.error("Failed to fetch device.");
+        throw new Error("Failed to fetch device.");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
+
   useEffect(() => {
     if (session && session.user) {
       fetchDevices();

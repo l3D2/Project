@@ -49,31 +49,40 @@ export default function ListAdmin() {
   const [newItemName, setNewItemName] = useState("");
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [error, setError] = useState(false);
 
   const fetchAdminList = async () => {
-    const res = await fetch("https://api.bd2-cloud.net/api/user/adminlist", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const result = Object.values(data)
-        .filter((item) => item.email !== session?.user?.email)
-        .map((item) => ({
-          name: item.name,
-          lastAccessed: new Date(item.update_ts).toLocaleString(),
-          online: item.isOnline,
-        }));
+    try {
+      const res = await fetch("https://api.bd2-cloud.net/api/user/adminlist", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const result = Object.values(data)
+          .filter((item) => item.email !== session?.user?.email)
+          .map((item) => ({
+            name: item.name,
+            lastAccessed: new Date(item.update_ts).toLocaleString(),
+            online: item.isOnline,
+            email: item.email,
+          }));
 
-      setAdminList(result);
-      console.log(result);
+        setAdminList(result);
+        console.log(result);
+      } else {
+        console.log("Error fetch admin list");
+        throw new Error("Error fetching admin list");
+      }
+    } catch {
+      console.log("Error fetch admin");
     }
   };
 
-  const handleDelete = (index) => {
-    setDeleteIndex(index);
+  const handleDelete = (email) => {
+    setDeleteIndex(email);
     setConfirmOpen(true);
   };
 
@@ -81,8 +90,22 @@ export default function ListAdmin() {
     setConfirmOpen(false);
   };
 
-  const handleConfirmDelete = () => {
-    setItems((prevItems) => prevItems.filter((_, i) => i !== deleteIndex));
+  const handleConfirmDelete = async () => {
+    const res = await fetch("https://api.bd2-cloud.net/api/user/deladmin", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: deleteIndex,
+      }),
+    });
+    if (res.ok) {
+      console.log("Admin del successfully");
+      fetchAdminList();
+    } else {
+      console.log("Admin del failed");
+    }
     setConfirmOpen(false);
   };
 
@@ -94,23 +117,30 @@ export default function ListAdmin() {
     setOpen(false);
   };
 
-  const handleSave = () => {
-    const newItem = {
-      name: newItemName,
-      lastAccessed: new Date().toLocaleString("en-GB", {
-        hour12: false,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }),
-      online: Math.random() < 0.5, // Randomly set online status for demonstration
-    };
-    setItems((prevItems) => [...prevItems, newItem]);
-    setNewItemName("");
-    setOpen(false);
+  const handleSave = async (e) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+    if (emailPattern.test(newItemName)) {
+      const res = await fetch("https://api.bd2-cloud.net/api/user/addadmin", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: newItemName,
+        }),
+      });
+      if (res.ok) {
+        console.log("Admin added successfully");
+      } else {
+        console.log("Admin add failed");
+      }
+      setNewItemName("");
+      fetchAdminList();
+      setOpen(false);
+      setError(false); // Reset error state
+    } else {
+      setError(true); // Set error state if email is invalid
+    }
   };
 
   useEffect(() => {
@@ -172,7 +202,7 @@ export default function ListAdmin() {
                         <IconButton
                           edge="end"
                           aria-label="delete"
-                          onClick={() => handleDelete(index)}
+                          onClick={() => handleDelete(item.email)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -188,13 +218,16 @@ export default function ListAdmin() {
           <DialogTitle>Add New Administrator</DialogTitle>
           <DialogContent>
             <TextField
-              type="email"
               autoFocus
               margin="dense"
               label="Email Address"
               fullWidth
               value={newItemName}
               onChange={(e) => setNewItemName(e.target.value)}
+              type="email" // ใช้ type เป็น "email"
+              error={error} // แสดงข้อผิดพลาดถ้ามี
+              helperText={error ? "Please enter a valid email address." : ""}
+              required
             />
           </DialogContent>
           <DialogActions>
