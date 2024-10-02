@@ -29,7 +29,7 @@ Chart.register(
 );
 
 // ฟังก์ชันนับจำนวน device_id ที่ไม่ซ้ำกันจากวันเดียวกัน
-const countUniqueDevices = (data) => {
+const countUniqueItems = (data, field, keyName = "stockDevice") => {
   const dateObject = {};
 
   data.forEach((item) => {
@@ -37,11 +37,11 @@ const countUniqueDevices = (data) => {
     if (!dateObject[date]) {
       dateObject[date] = new Set();
     }
-    dateObject[date].add(item.device_id);
+    dateObject[date].add(item[field]);
   });
 
   const result = Object.keys(dateObject).map((date) => ({
-    stockDevice: dateObject[date].size,
+    [keyName]: dateObject[date].size,
     datetime: date,
   }));
 
@@ -58,26 +58,26 @@ const filterDataByDate = (data, startDate, endDate) => {
 };
 
 const aggregateDataByDay = (data) => {
-  console.log("Day", data);
   const aggregatedData = {};
 
   data.forEach((item) => {
     const day = dayjs(item.datetime).format("YYYY-MM-DD");
     if (!aggregatedData[day]) {
       aggregatedData[day] = {
-        stockDevice: 0,
+        device: 0,
+        report: 0,
         count: 0,
       };
     }
-    aggregatedData[day].stockDevice += item.stockDevice;
+    aggregatedData[day].device += item.device;
+    aggregatedData[day].report += item.report; // นับจำนวนจริงจาก item.report
     aggregatedData[day].count += 1;
   });
 
   return Object.keys(aggregatedData).map((day) => ({
     datetime: day,
-    stockDevice: Math.round(
-      aggregatedData[day].stockDevice / aggregatedData[day].count
-    ),
+    device: Math.round(aggregatedData[day].device / aggregatedData[day].count),
+    report: aggregatedData[day].report, // ส่งค่า report ที่นับจำนวนจริงไป
   }));
 };
 
@@ -88,19 +88,22 @@ const aggregateDataByMonth = (data) => {
     const month = dayjs(item.datetime).format("YYYY-MM");
     if (!aggregatedData[month]) {
       aggregatedData[month] = {
-        stockDevice: 0,
+        device: 0,
+        report: 0,
         count: 0,
       };
     }
-    aggregatedData[month].stockDevice += item.stockDevice;
+    aggregatedData[month].device += item.device;
+    aggregatedData[month].report += item.report; // นับจำนวนจริงจาก item.report
     aggregatedData[month].count += 1;
   });
 
   return Object.keys(aggregatedData).map((month) => ({
     datetime: month,
-    stockDevice: Math.round(
-      aggregatedData[month].stockDevice / aggregatedData[month].count
+    device: Math.round(
+      aggregatedData[month].device / aggregatedData[month].count
     ),
+    report: aggregatedData[month].report, // ส่งค่า report ที่นับจำนวนจริงไป
   }));
 };
 
@@ -111,19 +114,22 @@ const aggregateDataByYear = (data) => {
     const year = dayjs(item.datetime).format("YYYY");
     if (!aggregatedData[year]) {
       aggregatedData[year] = {
-        stockDevice: 0,
+        device: 0,
+        report: 0,
         count: 0,
       };
     }
-    aggregatedData[year].stockDevice += item.stockDevice;
+    aggregatedData[year].device += item.device;
+    aggregatedData[year].report += item.report; // นับจำนวนจริงจาก item.report
     aggregatedData[year].count += 1;
   });
 
   return Object.keys(aggregatedData).map((year) => ({
     datetime: year,
-    stockDevice: Math.round(
-      aggregatedData[year].stockDevice / aggregatedData[year].count
+    device: Math.round(
+      aggregatedData[year].device / aggregatedData[year].count
     ),
+    report: aggregatedData[year].report, // ส่งค่า report ที่นับจำนวนจริงไป
   }));
 };
 
@@ -147,13 +153,13 @@ export default function AdminChart() {
     labels: [],
     datasets: [
       {
-        label: "EC",
+        label: "Device",
         backgroundColor: "rgba(75,192,192,0.4)",
         borderColor: "rgba(75,192,192,1)",
         data: [],
       },
       {
-        label: "Humidity",
+        label: "Report",
         data: [],
       },
     ],
@@ -179,6 +185,7 @@ export default function AdminChart() {
     };
     fetchData();
   }, []);
+  // console.log(reportData);
 
   useEffect(() => {
     if (uniqueDeviceIds.length > 0) {
@@ -187,9 +194,19 @@ export default function AdminChart() {
   }, [uniqueDeviceIds]);
 
   useEffect(() => {
-    const result = countUniqueDevices(data);
-
-    const filteredData = filterDataByDate(result, startDate, endDate);
+    const deviceResult = countUniqueItems(data, "device_id", "device");
+    const reportResult = countUniqueItems(reportData, "id", "report");
+    const combinedData = deviceResult.map((deviceItem) => {
+      const reportItem = reportResult.find(
+        (reportItem) => reportItem.datetime === deviceItem.datetime
+      );
+      return {
+        ...deviceItem,
+        report: reportItem ? reportItem.report : null,
+      };
+    });
+    console.log(combinedData);
+    const filteredData = filterDataByDate(combinedData, startDate, endDate);
     const processedData =
       viewMode === "month"
         ? aggregateDataByMonth(filteredData)
@@ -198,6 +215,7 @@ export default function AdminChart() {
         : viewMode === "day"
         ? aggregateDataByDay(filteredData)
         : filteredData;
+    console.log(processedData);
     const processedData2 = filterDataByDate(reportData, startDate, endDate);
     console.log("PCD1", processedData);
     console.log("PCD2", processedData2);
@@ -216,13 +234,13 @@ export default function AdminChart() {
           label: "Device",
           backgroundColor: "rgba(75,192,192,0.4)",
           borderColor: "rgba(75,192,192,1)",
-          data: processedData.map((items) => items.stockDevice),
+          data: processedData.map((items) => items.device),
         },
         {
           label: "Report",
           backgroundColor: "rgba(250,192,192,0.4)",
           borderColor: "rgba(250,192,192,1)",
-          data: processedData2.map((items) => items.report),
+          data: processedData.map((items) => items.report),
         },
       ],
     });

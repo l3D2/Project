@@ -22,7 +22,8 @@ export function GoogleMapProvider({ children }) {
     <LoadScript
       googleMapsApiKey={apiKey}
       libraries={libraries}
-      loadingElement={loading}
+      //loadingElement={loading}
+      loadingElement={<div style={{ display: "none" }} />}
     >
       <GoogleMapContext.Provider value={true}>
         {children}

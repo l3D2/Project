@@ -14,6 +14,7 @@ import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 import DataTable from "@/components/dataTable";
 import { useMarkers } from "@/context/FilterMap";
 import UserChart from "@/components/UserChart.js";
+import { useRouter } from "next/navigation";
 
 // MUI
 import Tabs from "@mui/material/Tabs";
@@ -34,6 +35,7 @@ import TerrainIcon from "@mui/icons-material/Terrain";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
 export default function Device() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const { location } = useContext(UserLocationContext);
   const searchParams = useSearchParams();
@@ -332,13 +334,17 @@ export default function Device() {
                 </Tabs>
               </Box>
               {value == 1 ? (
-                <GoogleMapProvider>
-                  <GoogleMapView location={location} />
-                </GoogleMapProvider>
-              ) : value == 2 ? (
-                <DataTable columns={columns} rows={rData} />
+                // <GoogleMapProvider>
+                <GoogleMapView location={location} />
+              ) : // </GoogleMapProvider>
+              value == 2 ? (
+                <div className="bg-gray-200">
+                  <DataTable columns={columns} rows={rData} />
+                </div>
               ) : value == 3 ? (
-                <UserChart deviceID={deviceID} rdata={rData} />
+                <div className="bg-gray-200">
+                  <UserChart deviceID={deviceID} rdata={rData} />
+                </div>
               ) : value == 4 ? (
                 <div className="bg-white w-full p-3">
                   <div className="flex flex-row justify-start mb-8">

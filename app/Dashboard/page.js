@@ -137,9 +137,9 @@ export default function Dashboard() {
           <div className="my-2">
             <Divider className="bg-gray-600" style={{ height: "2px" }} />
           </div>
-          <GoogleMapProvider>
-            <GoogleMapView location={location} />
-          </GoogleMapProvider>
+          {/* <GoogleMapProvider> */}
+          <GoogleMapView location={location} />
+          {/* </GoogleMapProvider> */}
         </div>
         <div className="grid w-full gap-2">
           <CardDevice rdata={device} />

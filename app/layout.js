@@ -7,6 +7,7 @@ import AuthProvider from "./providers";
 import { UserLocationProvider } from "@/context/context";
 import { MarkerProvider } from "@/context/FilterMap";
 import AutoLogout from "@/components/autoLogout";
+import { GoogleMapProvider } from "@/context/GoogleMapProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,9 @@ export default function RootLayout({ children }) {
           <div className="relative">
             <AutoLogout />
             <AuthProvider>
-              <MarkerProvider>{children}</MarkerProvider>
+              <GoogleMapProvider>
+                <MarkerProvider>{children}</MarkerProvider>
+              </GoogleMapProvider>
             </AuthProvider>
           </div>
         </body>
