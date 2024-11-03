@@ -1,6 +1,6 @@
 ### Install Guide
 
-> $\color{red}\textsf{\Large\kern{0.2cm}\ Important this project must have MQTT broker}$
+> :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Important this project must have MQTT broker}$
 
 1.  Install/Download NodeJS or Bun
 2.  Dowload this project
