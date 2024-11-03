@@ -1,6 +1,6 @@
 ### Install Guide
 
-> :bangbang:Important this project must have MQTT broker
+> <code style="color : red">:bangbang:Important this project must have MQTT broker</code>
 
 1.  Install/Download NodeJS or Bun
 2.  Dowload this project
