@@ -1,0 +1,38 @@
+{
+  "name": "pre-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/api.js",
+    "api1": "nodemon src/api_1.js",
+    "api2": "nodemon src/api_2.js",
+    "api3": "nodemon src/api_3.js",
+    "api4": "nodemon src/api_4.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/l3D2/Pre-Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/l3D2/Pre-Project/issues"
+  },
+  "homepage": "https://github.com/l3D2/Pre-Project#readme",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "gapi-script": "^1.2.0",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^3.1.4"
+  }
+}
