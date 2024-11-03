@@ -4,12 +4,12 @@
 2. Dowload this project
 3. Install requirement
    - API
-     go to directory
-     `cd ../Service/api`
-   # bun
-   `bun install`
+     > go to directory
+     > `cd ../Service/api`
+     > Bun
+     > `bun install`
    # NodeJS
-   `` npm i` or `npm install ``
+   `npm i` or `npm install `
 
 ### Service
 
