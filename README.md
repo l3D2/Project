@@ -101,6 +101,7 @@
         npm install
         ```
 4.  Run service
+
     - API service 1-4
       > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point API directory}$
       - service 1
@@ -144,32 +145,49 @@
         npm run api4
         ```
     - Line service
+
       > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point line directory}$
-      > Bun
+
+      Bun
+
       ```bash
       bun run dev
       ```
+
       NodeJS
+
       ```bash
       npm run dev
       ```
+
     - MQTT service
+
       > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point mqtt directory}$
-      > Bun
+
+      Bun
+
       ```bash
       bun run dev
       ```
+
       NodeJS
+
       ```bash
       npm run dev
       ```
+
     - Status service
+
       > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point status directory}$
-      > Bun
+
+      Bun
+
       ```bash
       bun run run
       ```
+
       NodeJS
+
       ```bash
       npm run run
       ```
