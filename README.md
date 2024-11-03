@@ -3,7 +3,7 @@
 > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Important this project must have MQTT broker}$
 
 1.  Install/Download NodeJS or Bun
-2.  Dowload this project
+2.  Dowload this project or Clone this project
 3.  Install requirement
     - API
       - Go to directory
@@ -101,8 +101,8 @@
         npm install
         ```
 4.  Run service
-    - api service 1-4
-      > :bangbang: terminal must point API directory
+    - API service 1-4
+      > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point API directory}$
       - service 1
         <br>
         Bun
@@ -143,4 +143,33 @@
         ```bash
         npm run api4
         ```
-    - mqtt service
+    - Line service
+      > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point line directory}$
+      > Bun
+      ```bash
+      bun run dev
+      ```
+      NodeJS
+      ```bash
+      npm run dev
+      ```
+    - MQTT service
+      > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point mqtt directory}$
+      > Bun
+      ```bash
+      bun run dev
+      ```
+      NodeJS
+      ```bash
+      npm run dev
+      ```
+    - Status service
+      > :bangbang: $\color{red}\textsf{\Large\kern{0.2cm}\ Terminal must point status directory}$
+      > Bun
+      ```bash
+      bun run run
+      ```
+      NodeJS
+      ```bash
+      npm run run
+      ```
