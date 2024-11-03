@@ -1,5 +1,6 @@
 ### Install Guide
 
+$\color{#D29922}\textsf{\Large\&#x26A0;\kern{0.2cm}\normalsize Warning}$
 <code style="color : red">:bangbang:Important this project must have MQTT broker</code>
 
 1.  Install/Download NodeJS or Bun
