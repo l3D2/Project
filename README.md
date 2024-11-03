@@ -45,45 +45,44 @@
         ```
     - MQTT
 4.  Run service
-
-- api service 1-4
-  - service 1
-    <br>
-    Bun
-    ```bash
-    bun run api1
-    ```
-    NodeJS
-    ```bash
-    npm run api1
-    ```
-  - service 2
-    <br>
-    Bun
-    ```bash
-    bun run api2
-    ```
-    NodeJS
-    ```bash
-    npm run api2
-    ```
-  - service 3
-    <br>
-    Bun
-    ```bash
-    bun run api3
-    ```
-    NodeJS
-    ```bash
-    npm run api3
-    ```
-  - service 4 (Hardware Only)
-    <br>
-    Bun
-    ```bash
-    bun run api4
-    ```
-    NodeJS
-    ```bash
-    npm run api4
-    ```
+    - api service 1-4
+      - service 1
+        <br>
+        Bun
+        ```bash
+        bun run api1
+        ```
+        NodeJS
+        ```bash
+        npm run api1
+        ```
+      - service 2
+        <br>
+        Bun
+        ```bash
+        bun run api2
+        ```
+        NodeJS
+        ```bash
+        npm run api2
+        ```
+      - service 3
+        <br>
+        Bun
+        ```bash
+        bun run api3
+        ```
+        NodeJS
+        ```bash
+        npm run api3
+        ```
+      - service 4 (Hardware Only)
+        <br>
+        Bun
+        ```bash
+        bun run api4
+        ```
+        NodeJS
+        ```bash
+        npm run api4
+        ```
