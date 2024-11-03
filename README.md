@@ -9,6 +9,7 @@
        cd ../Service/api
        ```
      - Install requirement:
+       <br>
        Bun
        ```bash
        bun install
@@ -22,8 +23,9 @@
        npm install
        ```
    - Run service api 1-4
-     - service 1
-   Bun
+   * service
+     <br>
+     Bun
    ```bash
    bun run api1
    ```
