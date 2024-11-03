@@ -1,6 +1,6 @@
 ### Install Guide
 
-> !Important this project must have MQTT broker
+> :bangbang:Important this project must have MQTT broker
 
 1.  Install/Download NodeJS or Bun
 2.  Dowload this project
@@ -44,8 +44,65 @@
         npm install
         ```
     - MQTT
+      - Go to directory
+      ```bash
+      cd ../Project/Service/mqtt
+      ```
+      - Install requirement:
+        <br>
+        Bun
+        ```bash
+        bun install
+        ```
+        NodeJS
+        ```bash
+        npm i
+        ```
+        or
+        ```bash
+        npm install
+        ```
+    - status
+      - Go to directory
+      ```bash
+      cd ../Project/Service/status
+      ```
+      - Install requirement:
+        <br>
+        Bun
+        ```bash
+        bun install
+        ```
+        NodeJS
+        ```bash
+        npm i
+        ```
+        or
+        ```bash
+        npm install
+        ```
+    - Web
+      - Go to directory
+      ```bash
+      cd ../Project/Web
+      ```
+      - Install requirement:
+        <br>
+        Bun
+        ```bash
+        bun install
+        ```
+        NodeJS
+        ```bash
+        npm i
+        ```
+        or
+        ```bash
+        npm install
+        ```
 4.  Run service
     - api service 1-4
+      > :bangbang: terminal must point API directory
       - service 1
         <br>
         Bun
@@ -86,3 +143,4 @@
         ```bash
         npm run api4
         ```
+    - mqtt service
