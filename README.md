@@ -9,7 +9,7 @@
    # bun
    `bun install`
    # NodeJS
-   `npm i` or `npm install`
+   `` npm i` or `npm install ``
 
 ### Service
 
