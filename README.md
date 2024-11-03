@@ -5,24 +5,19 @@
 3. Install requirement
    - API
      - go to directory
-       > ```bash
-       > cd ../Service/api
-       > ```
+       ```bash
+       cd ../Service/api
+       ```
      - Install requirement:
-       > Bun
-       >
-       > ```bash
-       > bun install
-       > ```
-       >
-       > NodeJS
-       >
-       > ```bash
-       > npm i
-       > ```
-       >
-       > or
-       >
-       > ```bash
-       > npm install
-       > ```
+       Bun
+       ```bash
+       bun install
+       ```
+       NodeJS
+       ```bash
+       npm i
+       ```
+       or
+       ```bash
+       npm install
+       ```
